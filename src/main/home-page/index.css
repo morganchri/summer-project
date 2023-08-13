@@ -1,0 +1,54 @@
+.chart-formatting {
+    width:100%;
+    max-width:700px;
+    border: lightgray 3px solid;
+    padding: 5px;
+}
+
+.header-positive {
+    color: limegreen;
+}
+
+.header-negative {
+    color: rgba(255, 0, 0, 0.5);
+}
+
+.nav-pill-positive {
+    /*background-color: limegreen;*/
+    /*border-radius: 10%;*/
+    color:black;
+}
+
+.nav-pill-negative {
+    /*background-color: red;*/
+    /*border-radius: 10%;*/
+    color: black;
+}
+
+.nav-pills .negative .nav-link:not(.active) {
+    background-color: rgba(255, 0, 0, 0);
+    color: rgba(255, 0, 0, 0.5);
+}
+
+.nav-pills .negative .nav-link {
+    background-color: rgba(255, 0, 0, 0.5);
+    color: white;
+}
+
+.nav-pills .positive .nav-link:not(.active) {
+    background-color: rgba(50,205,50,0.0);
+    color: limegreen;
+}
+
+.nav-pills .positive .nav-link {
+    background-color: rgba(50,205,50,0.5);
+    color: white;
+}
+
+.pill_nav_class_positive button {
+    color: rgba(50,205,50,0.5);
+}
+
+.pill_nav_class_negative button {
+    color: rgba(255, 0, 0, 0.5);
+}

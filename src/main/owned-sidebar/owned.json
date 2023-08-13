@@ -1,0 +1,5 @@
+[
+  {"_id": 123, "username": "cmorgan", "password": "chance11", "firstName": "Chris", "lastName": "Morgan",
+    "role": "casual", "funds": 0, "owned": {"AAPL": 5, "NVDA": 12, "MSFT": 3}}
+
+]
