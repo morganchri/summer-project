@@ -1,28 +1,17 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../index.css"
 import "./index.css"
-import {GetQuote, CompanyProfile, GetHistorical} from "../API/FinnhubData"
-import { useSelector } from "react-redux";
+import {GetQuote, CompanyProfile} from "../API/FinnhubData"
 
 
 const OwnedStocksList = (owned) => {
 
-	const { currentUser } = useSelector((state) => state.user);
-
 	const ticker = Object.keys(owned['owned'])[0]
 	const companyName = CompanyProfile(ticker);
-	// console.log("COMPANY NAME");
-	// console.log(companyName);
 	const stockName = companyName["name"];
-	// console.log("COMPANY NAME");
-	// console.log(stockName);
-	// stockName = stockName.split(' ')[0];
 
 	const quote = GetQuote(ticker);
-
-	// console.log("QUOTE");
-	// console.log(quote)
 
 	let price = quote['c'];
 	price = Math.floor(price * 100)/100

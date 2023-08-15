@@ -4,7 +4,8 @@ import "./index.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {GetQuote} from "../API/FinnhubData"
 import Chart from "chart.js/auto";
-import {current} from "@reduxjs/toolkit";
+import {useSelector} from "react-redux";
+import SearchBar from "../search/SearchBar";
 
 function Home({
 
@@ -15,7 +16,9 @@ function Home({
                       lastName: "Morgan",
                       owned: {"NVDA": 250, "QQQ": 12, "MSFT": 27}
                   }
-}) {
+              }) {
+
+    const { currentUser } = useSelector((state) => state.user);
 
     let total = 0;
     let change = 0;
