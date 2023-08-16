@@ -10,6 +10,8 @@ import "./index.css"
 function Details () {
 
 	const { currentUser } = useSelector((state) => state.user);
+	// let role = currentUser.role;
+	let role = "casual";
 
 	const { id } = useParams();
 
@@ -31,12 +33,55 @@ function Details () {
 	useEffect(() => {
 		fetchQuote();
 		fetchInfo();
-		setChart(<LineChart/>)
+		setChart(<LineChart/>);
 	}, []);
 
-	let change = quote.d;
+	const userAction = async (id, from, to, dateOffset) => {
+		const ctx = Chart.getChart("myChart")
+		let lineData = [];
+		const hist = await finnhubSearch.getHistorical(id, from, to)
+		if (lineData.length === 0) {
+			lineData = hist.c;
+			console.log("Data")
+			console.log(lineData)
+			lineData = lineData.slice(-dateOffset)
+		}
+		if (lineData.length !== 0) {
+			// https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
+			let extraData = hist.c;
+			extraData = extraData.slice(-dateOffset);
+			lineData.map(function (num, idx) {
+				return num + extraData[idx];
+			});
+		}
+		ctx.data.labels = Array(lineData.length).fill(null).map((_, i) => i);
+		ctx.data.datasets[0].data = lineData;
+		ctx.update();
+	}
+
+	// useEffect(() => {
+	//
+	// 	// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+	// 	// getData(userInfo, dateOffset, res)
+	//
+	// }, []);
+
+
+	document.addEventListener("DOMContentLoaded", function() {
+		let to = (new Date());
+		let from = (new Date());
+		let dateOffset = 2;
+		from.setDate(to.getDate() - dateOffset);
+		to.setHours(23,59,59,0);
+		from.setHours(0,0,0,0);
+		to = new Date(to).getTime();
+		from = new Date(from).getTime();
+		userAction(id, from, to, dateOffset);
+	});
 
 	const ctx = Chart.getChart("myChart")
+
+	let change = quote.d;
 
 	if (change >= 0) {
 		// const ctx = document.getElementById('myChart').getContext("2d")
@@ -51,12 +96,103 @@ function Details () {
 		ctx.update()
 	}
 
-	// ctx.set
-
 	const pillClickHandler = async (elem) => {
 		await setActive(elem.target.id);
 		const currentActive = elem.target.id;
-		// chartChangeClicker(currentActive);
+		chartChangeClicker(currentActive);
+	}
+
+	const chartChangeClicker = (currentActive) => {
+		let to = (new Date());
+		let from = (new Date());
+		if (currentActive === "1d") {
+			let dateOffset = 2;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+			// getData(userInfo, dateOffset, res)
+			userAction(id, from, to, dateOffset);
+		}
+		if (currentActive === "5d") {
+			let dateOffset = 5;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+			// getData(userInfo, dateOffset, res)
+			userAction(id, from, to, dateOffset);
+		}
+		if (currentActive === "7d") {
+			let dateOffset = 7;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+			// getData(userInfo, dateOffset, res)
+			userAction(id, from, to, dateOffset);
+		}
+		if (currentActive === "2w") {
+			let dateOffset = 14;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+			// getData(userInfo, dateOffset, res)
+			userAction(id, from, to, dateOffset);
+		}
+		if (currentActive === "1m") {
+			let dateOffset = 30;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+			// getData(userInfo, dateOffset, res)
+			userAction(id, from, to, dateOffset);
+		}
+		if (currentActive === "3m") {
+			let dateOffset = 90;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+			// getData(userInfo, dateOffset, res)
+			userAction(id, from, to, dateOffset);
+		}
+		if (currentActive === "6m") {
+			let dateOffset = 180;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+			// getData(userInfo, dateOffset, res)
+			userAction(id, from, to, dateOffset);
+		}
+		if (currentActive === "1y") {
+			let dateOffset = 365;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23, 59, 59, 0);
+			from.setHours(0, 0, 0, 0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+			// getData(userInfo, dateOffset, res)
+			userAction(id, from, to, dateOffset);
+		}
 	}
 
 	return (
@@ -96,31 +232,37 @@ function Details () {
 					</li>
 				</ul>
 				<h2>
-					Market Cap: ${(Math.round(info.marketCapitalization *100)/100).toLocaleString()}
+					Market Cap: ${(Math.round(info.marketCapitalization)/1000).toLocaleString()} Billion
 				</h2>
 				<h2>
 					Company Website: {info.weburl}
 				</h2>
 			</div>
-			<button
-				onClick={() => {
-					finnhubSearch.userLikesStock(info.id, {
-						name: info.name,
-						albumId: info.id,
-					});
-				}}
-				className="btn btn-success float-end button-hover-format">
-				Like
-			</button>
-			<button className="btn buy-button-format btn-success button-hover-format">
-				Buy
-			</button>
-			<button className="btn sell-button-format btn-success button-hover-format">
-				Sell
-			</button>
+			<div>
+				{currentUser && <button
+					onClick={() => {
+						finnhubSearch.userLikesStock(id, info.ticker);
+					}}
+					className="btn btn-success float-end button-hover-format">
+					Like
+				</button>}
+				{(currentUser && role !== "researcher") && <button
+					onClick = {() => {
+						finnhubSearch.userBuysStock(id, info.ticker);
+					}}
+					className="btn buy-button-format btn-success button-hover-format">
+					Buy
+				</button>}
+				{(currentUser && role !== "researcher") && <button
+					onClick = {() => {
+						finnhubSearch.userSellsStock(id, info.ticker);
+					}}
+					className="btn sell-button-format btn-success button-hover-format">
+					Sell
+				</button>}
+			</div>
 		</div>
 	)
-
 }
 
 export default Details;
