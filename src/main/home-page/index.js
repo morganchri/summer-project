@@ -6,6 +6,7 @@ import {GetQuote} from "../API/FinnhubData"
 import Chart from "chart.js/auto";
 import {useSelector} from "react-redux";
 import SearchBar from "../search/SearchBar";
+import {getOwnedStocks} from "../search/finnhubSearch";
 
 function Home({
 
@@ -38,7 +39,7 @@ function Home({
         setChart(<LineChart/>)
     },[]);
 
-    const ctx = Chart.getChart("myChart")
+    const ctx = Chart.getChart("myChart");
 
     if (change >= 0) {
         // const ctx = document.getElementById('myChart').getContext("2d")
@@ -53,74 +54,94 @@ function Home({
         ctx.update()
     }
 
+
+    // useEffect(() => {
+    //
+    // }, []);
+
+
+    // const ctx = Chart.getChart("myChart");
+    let to = new Date();
+    console.log(to.getDay())
+    if (to.getDay() === 6)  {
+        to.setDate(to.getDate() - 1);
+        to.setHours(23,59,59,0);
+        console.log(to)
+    }
+    if (to.getDay() === 0) {
+        to.setDate(to.getDate() - 1);
+    }
+    let from = new Date();
+
+    let [owned, setOwned] = useState({});
+
+    const getOwned = async () => {
+        console.log("User ID");
+        console.log(currentUser._id)
+        const owned = await getOwnedStocks(currentUser._id);
+        console.log("Owned");
+        console.log(owned);
+        setOwned(owned);
+    }
+
     useEffect(() => {
-
-        let to = new Date();
-        console.log(to.getDay())
-        if (to.getDay() === 6)  {
-            to.setDate(to.getDate() - 1);
-            to.setHours(23,59,59,0);
-            console.log(to)
-        }
-        if (to.getDay() === 0) {
-            to.setDate(to.getDate() - 1);
-        }
-        let from = new Date();
-        let users = userInfo;
-
-        // from = (to - dateOffset);
-        // https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-        const userAction = async () => {
-            let lineData = [];
-            // console.log("Resolution");
-            // console.log(res);
-            from.setDate(to.getDate() - 2);
-            to.setHours(23,59,59,0);
-            from.setHours(0,0,0,0)
-            to = new Date(to).getTime();
-            from = new Date(from).getTime();
-            console.log("To");
-            console.log(to);
-            console.log(new Date(to))
-            console.log("From");
-            console.log(from);
-            console.log(new Date(from))
-            for (let key in users.owned) {
-                console.log(key)
-                const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=D&from=${from}&to=${to}`
-                console.log("URL");
-                console.log(url)
-                const response = await fetch(url);
-                const myJson = await response.json(); //extract JSON from the http response
-                console.log("Historical Response");
-                console.log(myJson)
-                console.log(myJson.c)
-                if (lineData.length === 0) {
-                    lineData = myJson.c;
-                    lineData = lineData.slice(-2)
-                    console.log("Data")
-                    console.log(lineData)
-                }
-                if (lineData.length !== 0) {
-                    // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
-                    let extraData = myJson.c
-                    extraData = extraData.slice(-2)
-                    console.log("Line Data")
-                    console.log(extraData)
-                    lineData.map(function (num, idx) {
-                        return num + myJson.c[idx];
-                    });
-                }
-            }
-            const ctx = Chart.getChart("myChart")
-            // lineData
-            ctx.data.labels = Array(lineData.length).fill(null).map((_, i) => i);
-            ctx.data.datasets[0].data = lineData;
-            ctx.update();
-        }
-        userAction();
+        getOwned();
     }, []);
+    // let owned = currentUser;
 
+    // from = (to - dateOffset);
+    // https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
+    const userAction = async () => {
+        let lineData = [];
+        // console.log("Resolution");
+        // console.log(res);
+        from.setDate(to.getDate() - 2);
+        to.setHours(23,59,59,0);
+        from.setHours(0,0,0,0)
+        to = new Date(to).getTime();
+        from = new Date(from).getTime();
+        console.log("To");
+        console.log(to);
+        console.log(new Date(to))
+        console.log("From");
+        console.log(from);
+        console.log(new Date(from))
+        for (let key in owned.owned) {
+            console.log(key)
+            const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=D&from=${from}&to=${to}`
+            console.log("URL");
+            console.log(url)
+            const response = await fetch(url);
+            const myJson = await response.json(); //extract JSON from the http response
+            console.log("Historical Response");
+            console.log(myJson)
+            console.log(myJson.c)
+            if (lineData.length === 0) {
+                lineData = myJson.c;
+                lineData = lineData.slice(-2)
+                console.log("Data")
+                console.log(lineData)
+            }
+            if (lineData.length !== 0) {
+                // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
+                let extraData = myJson.c
+                extraData = extraData.slice(-2)
+                console.log("Line Data")
+                console.log(extraData)
+                lineData.map(function (num, idx) {
+                    return num + myJson.c[idx];
+                });
+            }
+        }
+        const ctx = Chart.getChart("myChart")
+        // lineData
+        ctx.data.labels = Array(lineData.length).fill(null).map((_, i) => i);
+        ctx.data.datasets[0].data = lineData;
+        ctx.update();
+    }
+    window.addEventListener('load', function () {
+        userAction();
+    })
 
 
     const pillClickHandler = async (elem) => {
@@ -133,7 +154,7 @@ function Home({
     const chartChangeClicker = (currentActive) => {
         let to = (new Date());
         let from = (new Date());
-        let users = userInfo;
+        let users = currentUser;
         if (currentActive === "1d") {
             let dateOffset = 2;
             let res = "D";
@@ -152,7 +173,7 @@ function Home({
                 console.log("From");
                 console.log(from);
                 console.log(new Date(from));
-                for (let key in users.owned) {
+                for (let key in owned.owned) {
                     console.log(key);
                     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
                     console.log("URL");
@@ -206,7 +227,7 @@ function Home({
                 console.log("From");
                 console.log(from);
                 console.log(new Date(from))
-                for (let key in users.owned) {
+                for (let key in owned.owned) {
                     console.log(key)
                     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
                     console.log("URL");
@@ -259,7 +280,7 @@ function Home({
                 console.log("From");
                 console.log(from);
                 console.log(new Date(from))
-                for (let key in users.owned) {
+                for (let key in owned.owned) {
                     console.log(key)
                     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
                     console.log("URL");
@@ -312,7 +333,7 @@ function Home({
                 console.log("From");
                 console.log(from);
                 console.log(new Date(from))
-                for (let key in users.owned) {
+                for (let key in owned.owned) {
                     console.log(key)
                     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
                     console.log("URL");
@@ -365,7 +386,7 @@ function Home({
                 console.log("From");
                 console.log(from);
                 console.log(new Date(from))
-                for (let key in users.owned) {
+                for (let key in owned.owned) {
                     console.log(key)
                     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
                     console.log("URL");
@@ -418,7 +439,7 @@ function Home({
                 console.log("From");
                 console.log(from);
                 console.log(new Date(from))
-                for (let key in users.owned) {
+                for (let key in owned.owned) {
                     console.log(key)
                     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
                     console.log("URL");
@@ -471,7 +492,7 @@ function Home({
                 console.log("From");
                 console.log(from);
                 console.log(new Date(from))
-                for (let key in users.owned) {
+                for (let key in owned.owned) {
                     console.log(key)
                     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
                     console.log("URL");
@@ -525,7 +546,7 @@ function Home({
                 console.log("From");
                 console.log(from);
                 console.log(new Date(from))
-                for (let key in users.owned) {
+                for (let key in owned.owned) {
                     console.log(key)
                     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
                     console.log("URL");

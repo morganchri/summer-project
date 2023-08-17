@@ -58,3 +58,8 @@ export const getOwnedStocks = async (userID) => {
 	console.log(response.data);
 	return response.data;
 }
+
+export const getAllLikes = async (userID) => {
+	const response  = await axios.get(`${SERVER_URL}/likes/${userID}/get`);
+	return response.data;
+}

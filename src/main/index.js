@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import NavigationSidebar from "./navigation-sidebar";
 import {Routes, Route, Link} from "react-router-dom";
 import Home from "./home-page";
@@ -9,8 +9,12 @@ import LoginScreen from "./user/login";
 import Profile from "./user/profile";
 import SearchBar from "./search/SearchBar";
 import Details from "./search/details"
+import LikedStocks from "./liked-sidebar";
+import LikedHomePage from "./home-page/research-home-page";
+import Scrobbles from "./home-page/scrobbles";
 
 function Main() {
+
     const { currentUser } = useSelector((state) => state.user);
 
     return (
@@ -21,8 +25,10 @@ function Main() {
                     </div>
                     <div className={"col-8"}>
                         <Routes>
-                            {currentUser && <Route path="/home" element={<Home/>}/>}
                             {!currentUser && <Route path="/home" element={<h1>Please log in or register</h1>}/>}
+                            {(currentUser && ((currentUser.role === "casual") || (currentUser.role === "professional"))) && <Route path="/home" element={<Home/>}/>}
+                            {currentUser && currentUser.role === "researcher" && <Route path="/home" element={<Scrobbles/>}/>}
+                            {/*{currentUser && currentUser.role === "researcher" && !liked && <Route path="/home" element={<h2>Like A Stock To See More Info</h2>}/>}*/}
                             <Route path="/portfolio" element={<h1>Portfolio</h1>} />
                             <Route path="/notifications" element={<h1>Notifications</h1>}/>
                             <Route path="/likes" element={<h1>Likes</h1>}/>
@@ -38,8 +44,9 @@ function Main() {
                         {/*<h1>Owned Stocks</h1>*/}
                         {!currentUser && <Link className="text-capitalize login-button-format" to="/login">   Login   </Link>}
                         {!currentUser && <Link className="text-capitalize login-button-format" to="/register">Register</Link>}
-                        {currentUser && (currentUser.role !== "research") && <OwnedStocks/>}
-                        {/*{currentUser && (currentUser.role === "research") && <LikedStocks/>}*/}
+                        {currentUser && (currentUser.role !== "researcher") && <OwnedStocks/>}
+                        {currentUser && (currentUser.role === "researcher") && <LikedStocks/>}
+                        {/*{currentUser && (currentUser.role === "researcher") && <OwnedStocks/>}*/}
                     </div>
                 </div>
             </div>

@@ -1,6 +1,4 @@
 import Chart from 'chart.js/auto'
-import {GetHistorical, GetQuote} from "../API/FinnhubData"
-import {useEffect, useState} from "react";
 
 const LineChart = ({
 

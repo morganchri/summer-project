@@ -29,7 +29,7 @@ function ProfileScreen() {
 		let radio2 = document.getElementById("contactChoice2");
 		let radio3 = document.getElementById("contactChoice3");
 
-		if (profile.role){
+		if (profile && profile.role){
 			if (profile.role === "casual") {
 				radio1.checked = true;
 			}

@@ -1,43 +1,46 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import * as finnhubSearch from "./finnhubSearch";
+import * as finnhubSearch from "../search/finnhubSearch";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LineChart from "../home-page/line-chart";
 import Chart from "chart.js/auto";
-import {useSelector} from "react-redux";
+// import {useSelector} from "react-redux";
 import "./index.css"
+import ResearchLineChart from "./research-line-chart";
 
-function Details () {
+function LikedHomePage (liked) {
 
-	const { currentUser } = useSelector((state) => state.user);
+	let ticker = liked.liked.stockTicker;
 
-	const { id } = useParams();
+	console.log("Ticker")
+	console.log(ticker)
+
+	// const { currentUser } = useSelector((state) => state.user);
 
 	const [quote, setQuote] = useState({});
 	const [info, setInfo] = useState({});
-	const[chart, setChart] = useState();
+	const [chart, setChart] = useState();
 	const [active, setActive] = useState("1d");
 
 	const fetchQuote = async () => {
-		const quote = await finnhubSearch.getQuote(id);
+		const quote = await finnhubSearch.getQuote(ticker);
 		setQuote(quote);
 	}
 
 	const fetchInfo = async () => {
-		const info = await finnhubSearch.getCompanyInfo(id);
+		const info = await finnhubSearch.getCompanyInfo(ticker);
 		setInfo(info)
 	}
 
 	useEffect(() => {
 		fetchQuote();
 		fetchInfo();
-		setChart(<LineChart/>);
+		setChart(<ResearchLineChart ticker={ticker}/>);
 	}, []);
 
-	const userAction = async (id, from, to, dateOffset) => {
-		const ctx = Chart.getChart("myChart")
+	const userAction = async (ticker, from, to, dateOffset) => {
+		const ctx = Chart.getChart(ticker)
 		let lineData = [];
-		const hist = await finnhubSearch.getHistorical(id, from, to)
+		const hist = await finnhubSearch.getHistorical(ticker, from, to)
 		if (lineData.length === 0) {
 			lineData = hist.c;
 			console.log("Data")
@@ -74,10 +77,14 @@ function Details () {
 		from.setHours(0,0,0,0);
 		to = new Date(to).getTime();
 		from = new Date(from).getTime();
-		userAction(id, from, to, dateOffset);
+		userAction(ticker, from, to, dateOffset);
+		// let e = document.getElementById("myChart");
+		// e.id = ticker;
 	});
 
-	const ctx = Chart.getChart("myChart")
+	const ctx = Chart.getChart(ticker)
+	console.log("Research Chart");
+	console.log(ctx)
 
 	let change = quote.d;
 
@@ -111,8 +118,7 @@ function Details () {
 			to = new Date(to).getTime();
 			from = new Date(from).getTime();
 			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-			// getData(userInfo, dateOffset, res)
-			userAction(id, from, to, dateOffset);
+			userAction(ticker, from, to, dateOffset);
 		}
 		if (currentActive === "5d") {
 			let dateOffset = 5;
@@ -122,8 +128,7 @@ function Details () {
 			to = new Date(to).getTime();
 			from = new Date(from).getTime();
 			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-			// getData(userInfo, dateOffset, res)
-			userAction(id, from, to, dateOffset);
+			userAction(ticker, from, to, dateOffset);
 		}
 		if (currentActive === "7d") {
 			let dateOffset = 7;
@@ -133,8 +138,7 @@ function Details () {
 			to = new Date(to).getTime();
 			from = new Date(from).getTime();
 			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-			// getData(userInfo, dateOffset, res)
-			userAction(id, from, to, dateOffset);
+			userAction(ticker, from, to, dateOffset);
 		}
 		if (currentActive === "2w") {
 			let dateOffset = 14;
@@ -144,8 +148,7 @@ function Details () {
 			to = new Date(to).getTime();
 			from = new Date(from).getTime();
 			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-			// getData(userInfo, dateOffset, res)
-			userAction(id, from, to, dateOffset);
+			userAction(ticker, from, to, dateOffset);
 		}
 		if (currentActive === "1m") {
 			let dateOffset = 30;
@@ -155,8 +158,7 @@ function Details () {
 			to = new Date(to).getTime();
 			from = new Date(from).getTime();
 			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-			// getData(userInfo, dateOffset, res)
-			userAction(id, from, to, dateOffset);
+			userAction(ticker, from, to, dateOffset);
 		}
 		if (currentActive === "3m") {
 			let dateOffset = 90;
@@ -166,8 +168,7 @@ function Details () {
 			to = new Date(to).getTime();
 			from = new Date(from).getTime();
 			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-			// getData(userInfo, dateOffset, res)
-			userAction(id, from, to, dateOffset);
+			userAction(ticker, from, to, dateOffset);
 		}
 		if (currentActive === "6m") {
 			let dateOffset = 180;
@@ -177,8 +178,7 @@ function Details () {
 			to = new Date(to).getTime();
 			from = new Date(from).getTime();
 			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-			// getData(userInfo, dateOffset, res)
-			userAction(id, from, to, dateOffset);
+			userAction(ticker, from, to, dateOffset);
 		}
 		if (currentActive === "1y") {
 			let dateOffset = 365;
@@ -188,20 +188,18 @@ function Details () {
 			to = new Date(to).getTime();
 			from = new Date(from).getTime();
 			// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-			// getData(userInfo, dateOffset, res)
-			userAction(id, from, to, dateOffset);
+			userAction(ticker, from, to, dateOffset);
 		}
 	}
 
 	return (
 		<div>
 			<div className="details-formatting">
-				<h2 className={(change >= 0) ? "positive" : "negative"}>
+				<h2 className={(change >= 0) ? "header-positive" : "header-negative"}>
 					<img src={info.logo} alt={info.name} className="rounded" /> {info.name} &nbsp;
 					${quote.c} (${quote.d}) {quote.dp}%
-
 				</h2>
-				<canvas id="myChart"></canvas>
+				<canvas id={ticker} className="chart-margin-top"></canvas>
 				{chart}
 				<ul className={(change >= 0) ? "nav nav-pills nav-justified pill_nav_class_positive" : "nav nav-pills nav-justified pill_nav_class_negative"}>
 					<li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
@@ -229,38 +227,9 @@ function Details () {
 						<button id='1y' className={`nav-link ${active === "1y" ? "active" : ""}`} onClick={pillClickHandler}>1 Year</button>
 					</li>
 				</ul>
-				<h2>
-					Market Cap: ${(Math.round(info.marketCapitalization)/1000).toLocaleString()} Billion
-				</h2>
-				<h2>
-					Company Website: {info.weburl}
-				</h2>
-			</div>
-			<div>
-				{currentUser && <button
-					onClick={() => {
-						finnhubSearch.userLikesStock(id, info.ticker);
-					}}
-					className="btn btn-success float-end button-hover-format">
-					Like
-				</button>}
-				{(currentUser && (currentUser.role !== "researcher")) && <button
-					onClick = {() => {
-						finnhubSearch.userBuysStock(id, info.ticker);
-					}}
-					className="btn buy-button-format btn-success button-hover-format">
-					Buy
-				</button>}
-				{(currentUser && (currentUser.role !== "researcher")) && <button
-					onClick = {() => {
-						finnhubSearch.userSellsStock(id, info.ticker);
-					}}
-					className="btn sell-button-format btn-success button-hover-format">
-					Sell
-				</button>}
 			</div>
 		</div>
 	)
 }
 
-export default Details;
+export default LikedHomePage;

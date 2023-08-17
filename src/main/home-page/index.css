@@ -52,3 +52,7 @@
 .pill_nav_class_negative button {
     color: rgba(255, 0, 0, 0.5);
 }
+
+.chart-margin-top {
+    margin-top: 5px;
+}

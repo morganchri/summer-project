@@ -13,7 +13,7 @@ const OwnedStocks = () => {
 	const getOwned = async () => {
 		console.log("User ID");
 		console.log(currentUser._id)
-		const owned = await getOwnedStocks(currentUser._id)
+		const owned = await getOwnedStocks(currentUser._id);
 		console.log("Owned");
 		console.log(owned);
 		setOwned(owned);
@@ -23,20 +23,16 @@ const OwnedStocks = () => {
 		getOwned();
 	}, []);
 
-
-
-
-
 	let owned = [];
 
-	if ((ownedArray !== undefined)) {
+	if ((ownedArray !== null)) {
 		for (let key in ownedArray.owned) {
 			let pair = {}
 			pair[key] = ownedArray.owned[key]
 			owned.push(pair)
 		}
 		// owned = Object.values(owned).filter(own => own.value !== 0);
-		for (let i =0; i < owned.length; i++) {
+		for (let i=0; i < owned.length; i++) {
 			for (let key in owned[i]) {
 				// console.log(key)
 				// console.log(owned)
