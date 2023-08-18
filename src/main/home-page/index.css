@@ -56,3 +56,21 @@
 .chart-margin-top {
     margin-top: 5px;
 }
+
+.graph-margin-bottom {
+    margin-bottom: 5px;
+}
+
+.header-formatting {
+    width:100%;
+    /*max-width:700px;*/
+    /*border: lightgray 3px solid;*/
+    padding: 5px;
+}
+
+.research-header-formatting {
+    width:100%;
+    /*max-width:700px;*/
+    border: lightgray 3px solid;
+    padding: 5px;
+}

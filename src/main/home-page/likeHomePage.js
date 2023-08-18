@@ -3,7 +3,7 @@ import {getAllLikes} from "../search/finnhubSearch";
 import {useSelector} from "react-redux";
 import LikedHomePage from "./research-home-page";
 
-const Scrobbles = () => {
+const LikeHomePage = () => {
 
 	const { currentUser } = useSelector((state) => state.user);
 
@@ -40,13 +40,22 @@ const Scrobbles = () => {
 		}
 		console.log("All Liked")
 		console.log(liked);
+		return(
+			<div className={"text-center research-header-formatting"}>
+				<h1>Hi {currentUser.firstName}! Here is your current research info.</h1>
+			<div>
+				{liked.map(ticker => <LikedHomePage key={ticker.key} liked={ticker}/>)}
+			</div>
+			</div>
+		)
+	} else {
+		return(
+		<div>
+			<h1>Like A Stock To See More Info</h1>
+		</div>
+		)
 	}
 
-	return(
-		<div>
-			{liked.map(ticker => <LikedHomePage key={ticker.key} liked={ticker}/>)}
-		</div>
-	)
 }
 
-export default Scrobbles;
+export default LikeHomePage;

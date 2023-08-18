@@ -6,6 +6,7 @@ import Chart from "chart.js/auto";
 // import {useSelector} from "react-redux";
 import "./index.css"
 import ResearchLineChart from "./research-line-chart";
+import jQuery from "jquery";
 
 function LikedHomePage (liked) {
 
@@ -37,8 +38,29 @@ function LikedHomePage (liked) {
 		setChart(<ResearchLineChart ticker={ticker}/>);
 	}, []);
 
+	useEffect(() => {
+		jQuery(document).ready(function(){
+			let to = (new Date());
+			let from = (new Date());
+			let dateOffset = 2;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			userAction(ticker, from, to, dateOffset);
+			// let e = document.getElementById("myChart");
+			// e.id = ticker;
+		});
+
+		window.onload = function(){
+			if(!document.location.hash){
+				window.location = "#loaded";
+			}
+		}
+	}, [chart]);
+
 	const userAction = async (ticker, from, to, dateOffset) => {
-		const ctx = Chart.getChart(ticker)
 		let lineData = [];
 		const hist = await finnhubSearch.getHistorical(ticker, from, to)
 		if (lineData.length === 0) {
@@ -55,6 +77,7 @@ function LikedHomePage (liked) {
 				return num + extraData[idx];
 			});
 		}
+		const ctx = Chart.getChart(ticker)
 		ctx.data.labels = Array(lineData.length).fill(null).map((_, i) => i);
 		ctx.data.datasets[0].data = lineData;
 		ctx.update();
@@ -68,19 +91,7 @@ function LikedHomePage (liked) {
 	// }, []);
 
 
-	document.addEventListener("DOMContentLoaded", function() {
-		let to = (new Date());
-		let from = (new Date());
-		let dateOffset = 2;
-		from.setDate(to.getDate() - dateOffset);
-		to.setHours(23,59,59,0);
-		from.setHours(0,0,0,0);
-		to = new Date(to).getTime();
-		from = new Date(from).getTime();
-		userAction(ticker, from, to, dateOffset);
-		// let e = document.getElementById("myChart");
-		// e.id = ticker;
-	});
+
 
 	const ctx = Chart.getChart(ticker)
 	console.log("Research Chart");
@@ -194,12 +205,12 @@ function LikedHomePage (liked) {
 
 	return (
 		<div>
-			<div className="details-formatting">
+			<div className="details-formatting chart-margin-top">
 				<h2 className={(change >= 0) ? "header-positive" : "header-negative"}>
 					<img src={info.logo} alt={info.name} className="rounded" /> {info.name} &nbsp;
 					${quote.c} (${quote.d}) {quote.dp}%
 				</h2>
-				<canvas id={ticker} className="chart-margin-top"></canvas>
+				<canvas id={ticker} className="graph-margin-bottom"></canvas>
 				{chart}
 				<ul className={(change >= 0) ? "nav nav-pills nav-justified pill_nav_class_positive" : "nav nav-pills nav-justified pill_nav_class_negative"}>
 					<li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>

@@ -6,6 +6,7 @@ import LineChart from "../home-page/line-chart";
 import Chart from "chart.js/auto";
 import {useSelector} from "react-redux";
 import "./index.css"
+import jQuery from "jquery";
 
 function Details () {
 
@@ -17,6 +18,9 @@ function Details () {
 	const [info, setInfo] = useState({});
 	const[chart, setChart] = useState();
 	const [active, setActive] = useState("1d");
+	const [cVol, setVol] = useState(0);
+	const [news, setNews] = useState("");
+	const [peers, setPeers] = useState([])
 
 	const fetchQuote = async () => {
 		const quote = await finnhubSearch.getQuote(id);
@@ -25,14 +29,60 @@ function Details () {
 
 	const fetchInfo = async () => {
 		const info = await finnhubSearch.getCompanyInfo(id);
-		setInfo(info)
+		setInfo(info);
+	}
+
+	const fetchVolume = async () => {
+		let to = (new Date());
+		let from = (new Date());
+		let dateOffset = 2;
+		from.setDate(to.getDate() - dateOffset);
+		to.setHours(23,59,59,0);
+		from.setHours(0,0,0,0);
+		to = new Date(to).getTime();
+		from = new Date(from).getTime();
+		const vol  = await finnhubSearch.getHistorical(id, from, to);
+		setVol(vol.v[vol.v.length - 1]);
+	}
+
+	const fetchNews = async () => {
+		const headline = await finnhubSearch.getCompanyNews(id);
+		console.log("Headline");
+		console.log(headline[0].headline);
+		console.log(headline[0].image);
+		setNews(headline[0]);
+	}
+
+	const fetchPeers = async () => {
+		const peers = await finnhubSearch.getPeers(id);
+		console.log("Peers test");
+		console.log(peers.indexOf(id));
+		console.log(peers.splice(peers.indexOf(id),1));
+		setPeers(peers);
 	}
 
 	useEffect(() => {
 		fetchQuote();
 		fetchInfo();
+		fetchVolume();
+		fetchNews();
+		fetchPeers();
 		setChart(<LineChart/>);
 	}, []);
+
+	useEffect(() => {
+		jQuery(document).ready(function(){
+			let to = (new Date());
+			let from = (new Date());
+			let dateOffset = 2;
+			from.setDate(to.getDate() - dateOffset);
+			to.setHours(23,59,59,0);
+			from.setHours(0,0,0,0);
+			to = new Date(to).getTime();
+			from = new Date(from).getTime();
+			userAction(id, from, to, dateOffset);
+		});
+	}, [chart]);
 
 	const userAction = async (id, from, to, dateOffset) => {
 		const ctx = Chart.getChart("myChart")
@@ -65,17 +115,7 @@ function Details () {
 	// }, []);
 
 
-	document.addEventListener("DOMContentLoaded", function() {
-		let to = (new Date());
-		let from = (new Date());
-		let dateOffset = 2;
-		from.setDate(to.getDate() - dateOffset);
-		to.setHours(23,59,59,0);
-		from.setHours(0,0,0,0);
-		to = new Date(to).getTime();
-		from = new Date(from).getTime();
-		userAction(id, from, to, dateOffset);
-	});
+
 
 	const ctx = Chart.getChart("myChart")
 
@@ -229,12 +269,54 @@ function Details () {
 						<button id='1y' className={`nav-link ${active === "1y" ? "active" : ""}`} onClick={pillClickHandler}>1 Year</button>
 					</li>
 				</ul>
-				<h2>
-					Market Cap: ${(Math.round(info.marketCapitalization)/1000).toLocaleString()} Billion
-				</h2>
-				<h2>
-					Company Website: {info.weburl}
-				</h2>
+				{(currentUser && currentUser.role === "professional") && <div>
+					<table className="table">
+						<thead>
+						<tr>
+							<th scope="col">Market Cap</th>
+							<th scope="col">Company Website</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>${(Math.round(info.marketCapitalization)
+								   / 1000).toLocaleString()} Billion
+							</td>
+							<td>{info.weburl}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>}
+				{(currentUser && currentUser.role === "professional") && <div>
+					<table className="table">
+						<thead>
+						<tr>
+							<th scope="col">Current Volume</th>
+							<th scope="col">Top Headline</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>{cVol.toLocaleString()}</td>
+							<td>{news.headline}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>}
+				{(currentUser && currentUser.role === "professional") && <div>
+					<table className="table">
+						<thead>
+						<tr>
+							<th scope="col">Peers</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>{peers.join(', ')}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>}
 			</div>
 			<div>
 				{currentUser && <button

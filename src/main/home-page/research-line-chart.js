@@ -4,10 +4,6 @@ const ResearchLineChart = (ticker) => {
 
 	let stockTicker = ticker.ticker;
 
-	console.log("Research Line Chart Ticker")
-	console.log(stockTicker)
-
-	console.log("Chart")
 	const ctx = document.getElementById(stockTicker).getContext("2d");
 
 	// https://www.chartjs.org/docs/latest/samples/plugins/chart-area-border.html

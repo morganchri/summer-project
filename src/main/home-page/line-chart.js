@@ -15,7 +15,6 @@ const LineChart = ({
                    },
                    ) => {
 
-    console.log("Chart")
     const ctx = document.getElementById('myChart').getContext("2d");
 
     // https://www.chartjs.org/docs/latest/samples/plugins/chart-area-border.html
@@ -32,37 +31,6 @@ const LineChart = ({
             ctx.restore();
         }
     };
-
-    // let ticker = "AAPL";
-    // const [hist, setHist] = useState({})
-
-    // To get JSON manually
-    // https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-    // const userAction = async () => {
-    //     console.log("Resolution");
-    //     console.log(res);
-    //     from.setDate(to.getDate() - 1);
-    //     to.setHours(23,59,59,0);
-    //     from.setHours(0,0,0,0)
-    //     to = new Date(to).getTime();
-    //     from = new Date(from).getTime();
-    //     console.log("To");
-    //     console.log(to);
-    //     console.log(new Date(to))
-    //     console.log("From");
-    //     console.log(from);
-    //     console.log(new Date(from))
-    //     console.log(ticker)
-    //     const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${ticker}&resolution=${res}&from=${from}&to=${to}`
-    //     console.log("URL");
-    //     console.log(url)
-    //     const response = await fetch(url);
-    //     const myJson = await response.json(); //extract JSON from the http response
-    //     console.log("Historical Response");
-    //     console.log(myJson)
-    //     // setHist(myJson);
-    //     return(myJson);
-    // }
 
     const data = {
 

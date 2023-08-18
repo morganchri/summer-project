@@ -63,3 +63,19 @@ export const getAllLikes = async (userID) => {
 	const response  = await axios.get(`${SERVER_URL}/likes/${userID}/get`);
 	return response.data;
 }
+
+// https://finnhub.io/api/v1/company-news?symbol=AAPL&from=2021-09-01&to=2021-09-09&token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220
+export const getCompanyNews = async (ticker) => {
+	const today = new Date();
+	let yesterday = new Date();
+	yesterday = new Date(yesterday.setDate(today.getDate() - 1));
+	const date = today.toISOString().split('T')[0];
+	const date2 = yesterday.toISOString().split('T')[0];
+	const response = await axios.get(`${FINNHUB_API_BASE}/company-news?${TOKEN}&symbol=${ticker}&from=${date2}&to=${date}`)
+	return response.data;
+}
+
+export const getPeers = async (ticker) => {
+	const response = await axios.get(`${FINNHUB_API_BASE}/stock/peers?${TOKEN}&symbol=${ticker}`)
+	return response.data;
+}

@@ -11,15 +11,15 @@ import SearchBar from "./search/SearchBar";
 import Details from "./search/details"
 import LikedStocks from "./liked-sidebar";
 import LikedHomePage from "./home-page/research-home-page";
-import Scrobbles from "./home-page/scrobbles";
+import LikeHomePage from "./home-page/likeHomePage";
 
 function Main() {
 
     const { currentUser } = useSelector((state) => state.user);
 
     return (
-            <div>
-                <div className={"row page-margins"}>
+            <div className={"page-margins"}>
+                <div className={"row"}>
                     <div className={"col-2"}>
                         <NavigationSidebar/>
                     </div>
@@ -27,8 +27,7 @@ function Main() {
                         <Routes>
                             {!currentUser && <Route path="/home" element={<h1>Please log in or register</h1>}/>}
                             {(currentUser && ((currentUser.role === "casual") || (currentUser.role === "professional"))) && <Route path="/home" element={<Home/>}/>}
-                            {currentUser && currentUser.role === "researcher" && <Route path="/home" element={<Scrobbles/>}/>}
-                            {/*{currentUser && currentUser.role === "researcher" && !liked && <Route path="/home" element={<h2>Like A Stock To See More Info</h2>}/>}*/}
+                            {currentUser && currentUser.role === "researcher" && <Route path="/home" element={<LikeHomePage/>}/>}
                             <Route path="/portfolio" element={<h1>Portfolio</h1>} />
                             <Route path="/notifications" element={<h1>Notifications</h1>}/>
                             <Route path="/likes" element={<h1>Likes</h1>}/>
@@ -41,12 +40,10 @@ function Main() {
                         </Routes>
                     </div>
                     <div className={"col-2"}>
-                        {/*<h1>Owned Stocks</h1>*/}
                         {!currentUser && <Link className="text-capitalize login-button-format" to="/login">   Login   </Link>}
                         {!currentUser && <Link className="text-capitalize login-button-format" to="/register">Register</Link>}
                         {currentUser && (currentUser.role !== "researcher") && <OwnedStocks/>}
                         {currentUser && (currentUser.role === "researcher") && <LikedStocks/>}
-                        {/*{currentUser && (currentUser.role === "researcher") && <OwnedStocks/>}*/}
                     </div>
                 </div>
             </div>
