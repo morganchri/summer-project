@@ -4,6 +4,7 @@ import "../index.css"
 import "./index.css"
 import {GetQuote} from "../API/FinnhubData"
 import {getCompanyInfo, getQuote} from "../search/finnhubSearch";
+import {Link} from "react-router-dom";
 
 
 const LikedStocksList = (liked) => {
@@ -47,8 +48,10 @@ const LikedStocksList = (liked) => {
 			<div className="row">
 				<div className="col-4">
 					<div>
-						{stockName}<br/>
-						{ticker}
+						<Link to={`/details/${ticker}`}>
+							{stockName}<br/>
+							{ticker}
+						</Link>
 					</div>
 				</div>
 				<div className="col-8 owned_stocks_formatting">

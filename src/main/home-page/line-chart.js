@@ -57,7 +57,7 @@ const LineChart = ({
         },
         scales: {
             y : {
-                display: false
+                display: false,
             },
             x: {
                 display: false

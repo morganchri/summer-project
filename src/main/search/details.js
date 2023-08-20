@@ -16,11 +16,13 @@ function Details () {
 
 	const [quote, setQuote] = useState({});
 	const [info, setInfo] = useState({});
-	const[chart, setChart] = useState();
+	const [chart, setChart] = useState();
 	const [active, setActive] = useState("1d");
 	const [cVol, setVol] = useState(0);
 	const [news, setNews] = useState("");
-	const [peers, setPeers] = useState([])
+	const [peers, setPeers] = useState([]);
+	const [owned, setOwned] = useState(null);
+	const [likes, setLikes] = useState([]);
 
 	const fetchQuote = async () => {
 		const quote = await finnhubSearch.getQuote(id);
@@ -47,18 +49,22 @@ function Details () {
 
 	const fetchNews = async () => {
 		const headline = await finnhubSearch.getCompanyNews(id);
-		console.log("Headline");
-		console.log(headline[0].headline);
-		console.log(headline[0].image);
 		setNews(headline[0]);
 	}
 
 	const fetchPeers = async () => {
 		const peers = await finnhubSearch.getPeers(id);
-		console.log("Peers test");
-		console.log(peers.indexOf(id));
-		console.log(peers.splice(peers.indexOf(id),1));
 		setPeers(peers);
+	}
+
+	const fetchOwned = async () => {
+		const owned = await finnhubSearch.getOwnedStocks(currentUser._id);
+		setOwned(owned);
+	}
+
+	const fetchLikes = async () => {
+		const likes = await finnhubSearch.getAllLikes(currentUser._id);
+		setLikes(likes);
 	}
 
 	useEffect(() => {
@@ -67,8 +73,10 @@ function Details () {
 		fetchVolume();
 		fetchNews();
 		fetchPeers();
+		fetchOwned();
+		fetchLikes();
 		setChart(<LineChart/>);
-	}, []);
+	}, [id]);
 
 	useEffect(() => {
 		jQuery(document).ready(function(){
@@ -106,16 +114,6 @@ function Details () {
 		ctx.data.datasets[0].data = lineData;
 		ctx.update();
 	}
-
-	// useEffect(() => {
-	//
-	// 	// https://stackoverflow.com/questions/36975619/how-to-call-a-rest-web-service-api-from-javascript
-	// 	// getData(userInfo, dateOffset, res)
-	//
-	// }, []);
-
-
-
 
 	const ctx = Chart.getChart("myChart")
 
@@ -233,6 +231,36 @@ function Details () {
 		}
 	}
 
+	const checkDisabled = () => {
+		console.log("Likes");
+		console.log(likes);
+		console.log("Owned");
+		console.log(owned);
+		const userLikes = likes.filter(like => like.user === currentUser._id)
+		console.log("User Likes");
+		console.log(userLikes);
+		if (owned) {
+			const userOwned = owned.owned[id];
+			console.log("User Owned");
+			console.log(userOwned);
+			if (userOwned === 0) {
+				document.getElementById("sellButton").disabled = true;
+			}
+			if (userOwned !== 0) {
+				document.getElementById("sellButton").disabled = false;
+			}
+		}
+		if (userLikes) {
+			document.getElementById("likeButton").disabled = true;
+		} else {
+			document.getElementById("likeButton").disabled = false;
+		}
+	}
+
+	useEffect(() => {
+		checkDisabled();
+		}, [owned, likes]);
+
 	return (
 		<div>
 			<div className="details-formatting">
@@ -319,23 +347,43 @@ function Details () {
 				</div>}
 			</div>
 			<div>
-				{currentUser && <button
+				{currentUser && <button id={"likeButton"}
 					onClick={() => {
-						finnhubSearch.userLikesStock(id, info.ticker);
+						jQuery.ajax({
+										url:finnhubSearch.userLikesStock(currentUser._id, id),
+										success:function(){
+											// fetchOwned();
+											checkDisabled();
+										}
+									})
 					}}
 					className="btn btn-success float-end button-hover-format">
 					Like
 				</button>}
-				{(currentUser && (currentUser.role !== "researcher")) && <button
-					onClick = {() => {
-						finnhubSearch.userBuysStock(id, info.ticker);
+				{(currentUser && (currentUser.role !== "researcher")) && <button id={"buyButton"}
+					onClick = {async () => {
+						jQuery.ajax({
+								   url:await finnhubSearch.userBuysStock(currentUser._id, id),
+								   success:function(){
+									   // fetchOwned();
+									   checkDisabled();
+								   }
+							   })
+						// finnhubSearch.userBuysStock(currentUser._id, id);
+						// fetchOwned();
 					}}
 					className="btn buy-button-format btn-success button-hover-format">
 					Buy
 				</button>}
-				{(currentUser && (currentUser.role !== "researcher")) && <button
-					onClick = {() => {
-						finnhubSearch.userSellsStock(id, info.ticker);
+				{(currentUser && (currentUser.role !== "researcher")) && <button id={"sellButton"}
+					onClick = {async () => {
+						jQuery.ajax({
+										url:await finnhubSearch.userSellsStock(currentUser._id, id),
+										success:function(){
+											// fetchOwned();
+											checkDisabled();
+										}
+									})
 					}}
 					className="btn sell-button-format btn-success button-hover-format">
 					Sell

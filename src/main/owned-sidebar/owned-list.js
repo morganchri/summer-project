@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../index.css"
 import "./index.css"
 import {GetQuote, CompanyProfile} from "../API/FinnhubData"
+import {Link} from "react-router-dom";
 
 
 const OwnedStocksList = (owned) => {
@@ -25,8 +26,10 @@ const OwnedStocksList = (owned) => {
 			<div className="row">
 				<div className="col-4">
 					<div>
-						{stockName}<br/>
-						{ticker}
+						<Link to={`/details/${ticker}`}>
+							{stockName}<br/>
+							{ticker}
+						</Link>
 					</div>
 				</div>
 				<div className="col-8 owned_stocks_formatting">

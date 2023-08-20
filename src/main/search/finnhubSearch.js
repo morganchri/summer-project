@@ -48,14 +48,7 @@ export const userSellsStock = async (userID, stockTicker) => {
 }
 
 export const getOwnedStocks = async (userID) => {
-	console.log("Sent ID")
-	console.log(userID)
-	console.log("URL");
-	console.log(`${SERVER_URL}/owned/${userID}/get`)
-	console.log(await axios.get(`${SERVER_URL}/owned/${userID}/get`))
 	const response  = await axios.get(`${SERVER_URL}/owned/${userID}/get`);
-	console.log("Data");
-	console.log(response.data);
 	return response.data;
 }
 

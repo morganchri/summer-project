@@ -70,7 +70,9 @@ function Home() {
                 const pct = (change/total)*100;
                 setTotal(total);
                 setChange(change);
-                setPct(pct);
+                if (!isNaN(pct)){
+                    setPct(pct);
+                }
             }
         }
     }

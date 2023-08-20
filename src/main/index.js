@@ -12,6 +12,7 @@ import Details from "./search/details"
 import LikedStocks from "./liked-sidebar";
 import LikedHomePage from "./home-page/research-home-page";
 import LikeHomePage from "./home-page/likeHomePage";
+import PublicProfile from "./user/public-profile";
 
 function Main() {
 
@@ -33,6 +34,7 @@ function Main() {
                             <Route path="/likes" element={<h1>Likes</h1>}/>
                             <Route path="/lists" element={<h1>Lists</h1>}/>
                             <Route path="/profile" element={<Profile/>}/>
+                            <Route path="/profile/:uid" element={<PublicProfile/>}/>
                             <Route path="/search" element={<SearchBar/>}/>
                             <Route path="/register" element={<RegisterScreen/>}/>
                             <Route path="/login" element={<LoginScreen/>}/>
