@@ -7,38 +7,6 @@ import {useSelector} from "react-redux";
 import {getOwnedStocks, getQuote} from "../search/finnhubSearch";
 import jQuery from "jquery";
 
-// function Main() {
-//
-//     const { currentUser } = useSelector((state) => state.user);
-//
-//     const [owned, setOwned] = useState({});
-//
-//     const getOwned = async () => {
-//         const owned = await getOwnedStocks(currentUser._id);
-//         setOwned(owned);
-//     }
-//
-//     useEffect(() => {
-//         getOwned();
-//     }, []);
-//
-//     if (owned) {
-//         return (
-//             <div>
-//                 <Home/>
-//             </div>
-//         )
-//     } else {
-//         return (
-//             <div>
-//                 <h1>Buy stocks to </h1>
-//             </div>
-//
-//         )
-//     }
-//
-// }
-
 function Home() {
 
     const { currentUser } = useSelector((state) => state.user);
@@ -61,9 +29,9 @@ function Home() {
         let change = 0;
         if (owned) {
             for (let key in owned.owned) {
-                console.log("Keys")
-                console.log(owned.owned)
-                console.log(owned.owned[key])
+                // console.log("Keys")
+                // console.log(owned.owned)
+                // console.log(owned.owned[key])
                 let quote = await getQuote(key);
                 total += quote.c * owned.owned[key];
                 change += quote.d * owned.owned[key];
@@ -102,10 +70,10 @@ function Home() {
 
     useEffect(() => {
         jQuery(document).ready(function(){
-            console.log("My Chart");
+            // console.log("My Chart");
             const ctx = Chart.getChart("myChart")
-            console.log(chart)
-            console.log(ctx)
+            // console.log(chart)
+            // console.log(ctx)
 
             if (change >= 0) {
                 ctx.data.datasets[0].backgroundColor = "rgba(50, 205, 50, 0.2)"
@@ -123,11 +91,11 @@ function Home() {
             userAction(to, from);
         });
 
-        window.onload = function(){
-            if(!document.location.hash){
-                window.location = "#loaded";
-            }
-        }
+    //     window.onload = function(){
+    //         if(!document.location.hash){
+    //             window.location = "#loaded";
+    //         }
+    //     }
     }, [chart]);
 
 
@@ -181,41 +149,41 @@ function Home() {
                 let res = "D";
                 const userAction = async () => {
                     let lineData = [];
-                    console.log("Resolution");
-                    console.log(res);
+                    // console.log("Resolution");
+                    // console.log(res);
                     from.setDate(to.getDate() - dateOffset);
                     to.setHours(23, 59, 59, 0);
                     from.setHours(0, 0, 0, 0);
                     to = new Date(to).getTime();
                     from = new Date(from).getTime();
-                    console.log("To");
-                    console.log(to);
-                    console.log(new Date(to));
-                    console.log("From");
-                    console.log(from);
-                    console.log(new Date(from));
+                    // console.log("To");
+                    // console.log(to);
+                    // console.log(new Date(to));
+                    // console.log("From");
+                    // console.log(from);
+                    // console.log(new Date(from));
                     for (let key in owned.owned) {
-                        console.log(key);
+                        // console.log(key);
                         const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
-                        console.log("URL");
-                        console.log(url);
+                        // console.log("URL");
+                        // console.log(url);
                         const response = await fetch(url);
                         const myJson = await response.json(); //extract JSON from the http response
-                        console.log("Historical Response");
-                        console.log(myJson);
-                        console.log(myJson.c);
+                        // console.log("Historical Response");
+                        // console.log(myJson);
+                        // console.log(myJson.c);
                         if (lineData.length === 0) {
                             lineData = myJson.c;
                             lineData = lineData.slice(-dateOffset)
-                            console.log("Data");
-                            console.log(lineData);
+                            // console.log("Data");
+                            // console.log(lineData);
                         }
                         if (lineData.length !== 0) {
                             // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
                             let extraData = myJson.c;
                             extraData = extraData.slice(-dateOffset);
-                            console.log("Line Data");
-                            console.log(extraData);
+                            // console.log("Line Data");
+                            // console.log(extraData);
                             lineData.map(function (num, idx) {
                                 return num + myJson.c[idx];
                             });
@@ -235,41 +203,41 @@ function Home() {
                 let res = "D"
                 const userAction = async () => {
                     let lineData = [];
-                    console.log("Resolution");
-                    console.log(res);
+                    // console.log("Resolution");
+                    // console.log(res);
                     from.setDate(to.getDate() - dateOffset);
                     to.setHours(23, 59, 59, 0);
                     from.setHours(0, 0, 0, 0)
                     to = new Date(to).getTime();
                     from = new Date(from).getTime();
-                    console.log("To");
-                    console.log(to);
-                    console.log(new Date(to))
-                    console.log("From");
-                    console.log(from);
-                    console.log(new Date(from))
+                    // console.log("To");
+                    // console.log(to);
+                    // console.log(new Date(to))
+                    // console.log("From");
+                    // console.log(from);
+                    // console.log(new Date(from))
                     for (let key in owned.owned) {
-                        console.log(key)
+                        // console.log(key)
                         const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
-                        console.log("URL");
-                        console.log(url)
+                        // console.log("URL");
+                        // console.log(url)
                         const response = await fetch(url);
                         const myJson = await response.json(); //extract JSON from the http response
-                        console.log("Historical Response");
-                        console.log(myJson)
-                        console.log(myJson.c)
+                        // console.log("Historical Response");
+                        // console.log(myJson)
+                        // console.log(myJson.c)
                         if (lineData.length === 0) {
                             lineData = myJson.c;
                             lineData = lineData.slice(-dateOffset)
-                            console.log("Data")
-                            console.log(lineData)
+                            // console.log("Data")
+                            // console.log(lineData)
                         }
                         if (lineData.length !== 0) {
                             // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
                             let extraData = myJson.c
                             extraData = extraData.slice(-dateOffset)
-                            console.log("Line Data")
-                            console.log(extraData)
+                            // console.log("Line Data")
+                            // console.log(extraData)
                             lineData.map(function (num, idx) {
                                 return num + myJson.c[idx];
                             });
@@ -288,41 +256,41 @@ function Home() {
                 let res = "D"
                 const userAction = async () => {
                     let lineData = [];
-                    console.log("Resolution");
-                    console.log(res);
+                    // console.log("Resolution");
+                    // console.log(res);
                     from.setDate(to.getDate() - dateOffset);
                     to.setHours(23, 59, 59, 0);
                     from.setHours(0, 0, 0, 0)
                     to = new Date(to).getTime();
                     from = new Date(from).getTime();
-                    console.log("To");
-                    console.log(to);
-                    console.log(new Date(to))
-                    console.log("From");
-                    console.log(from);
-                    console.log(new Date(from))
+                    // console.log("To");
+                    // console.log(to);
+                    // console.log(new Date(to))
+                    // console.log("From");
+                    // console.log(from);
+                    // console.log(new Date(from))
                     for (let key in owned.owned) {
-                        console.log(key)
+                        // console.log(key)
                         const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
-                        console.log("URL");
-                        console.log(url)
+                        // console.log("URL");
+                        // console.log(url)
                         const response = await fetch(url);
                         const myJson = await response.json(); //extract JSON from the http response
-                        console.log("Historical Response");
-                        console.log(myJson)
-                        console.log(myJson.c)
+                        // console.log("Historical Response");
+                        // console.log(myJson)
+                        // console.log(myJson.c)
                         if (lineData.length === 0) {
                             lineData = myJson.c;
                             lineData = lineData.slice(-dateOffset)
-                            console.log("Data")
-                            console.log(lineData)
+                            // console.log("Data")
+                            // console.log(lineData)
                         }
                         if (lineData.length !== 0) {
                             // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
                             let extraData = myJson.c
                             extraData = extraData.slice(-dateOffset)
-                            console.log("Line Data")
-                            console.log(extraData)
+                            // console.log("Line Data")
+                            // console.log(extraData)
                             lineData.map(function (num, idx) {
                                 return num + myJson.c[idx];
                             });
@@ -341,41 +309,41 @@ function Home() {
                 let res = "D"
                 const userAction = async () => {
                     let lineData = [];
-                    console.log("Resolution");
-                    console.log(res);
+                    // console.log("Resolution");
+                    // console.log(res);
                     from.setDate(to.getDate() - dateOffset);
                     to.setHours(23, 59, 59, 0);
                     from.setHours(0, 0, 0, 0)
                     to = new Date(to).getTime();
                     from = new Date(from).getTime();
-                    console.log("To");
-                    console.log(to);
-                    console.log(new Date(to))
-                    console.log("From");
-                    console.log(from);
-                    console.log(new Date(from))
+                    // console.log("To");
+                    // console.log(to);
+                    // console.log(new Date(to))
+                    // console.log("From");
+                    // console.log(from);
+                    // console.log(new Date(from))
                     for (let key in owned.owned) {
-                        console.log(key)
+                        // console.log(key)
                         const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
-                        console.log("URL");
-                        console.log(url)
+                        // console.log("URL");
+                        // console.log(url)
                         const response = await fetch(url);
                         const myJson = await response.json(); //extract JSON from the http response
-                        console.log("Historical Response");
-                        console.log(myJson)
-                        console.log(myJson.c)
+                        // console.log("Historical Response");
+                        // console.log(myJson)
+                        // console.log(myJson.c)
                         if (lineData.length === 0) {
                             lineData = myJson.c;
                             lineData = lineData.slice(-dateOffset)
-                            console.log("Data")
-                            console.log(lineData)
+                            // console.log("Data")
+                            // console.log(lineData)
                         }
                         if (lineData.length !== 0) {
                             // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
                             let extraData = myJson.c
                             extraData = extraData.slice(-dateOffset)
-                            console.log("Line Data")
-                            console.log(extraData)
+                            // console.log("Line Data")
+                            // console.log(extraData)
                             lineData.map(function (num, idx) {
                                 return num + myJson.c[idx];
                             });
@@ -394,41 +362,41 @@ function Home() {
                 let res = "D"
                 const userAction = async () => {
                     let lineData = [];
-                    console.log("Resolution");
-                    console.log(res);
+                    // console.log("Resolution");
+                    // console.log(res);
                     from.setDate(to.getDate() - dateOffset);
                     to.setHours(23, 59, 59, 0);
                     from.setHours(0, 0, 0, 0)
                     to = new Date(to).getTime();
                     from = new Date(from).getTime();
-                    console.log("To");
-                    console.log(to);
-                    console.log(new Date(to))
-                    console.log("From");
-                    console.log(from);
-                    console.log(new Date(from))
+                    // console.log("To");
+                    // console.log(to);
+                    // console.log(new Date(to))
+                    // console.log("From");
+                    // console.log(from);
+                    // console.log(new Date(from))
                     for (let key in owned.owned) {
-                        console.log(key)
+                        // console.log(key)
                         const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
-                        console.log("URL");
-                        console.log(url)
+                        // console.log("URL");
+                        // console.log(url)
                         const response = await fetch(url);
                         const myJson = await response.json(); //extract JSON from the http response
-                        console.log("Historical Response");
-                        console.log(myJson)
-                        console.log(myJson.c)
+                        // console.log("Historical Response");
+                        // console.log(myJson)
+                        // console.log(myJson.c)
                         if (lineData.length === 0) {
                             lineData = myJson.c;
                             lineData = lineData.slice(-dateOffset)
-                            console.log("Data")
-                            console.log(lineData)
+                            // console.log("Data")
+                            // console.log(lineData)
                         }
                         if (lineData.length !== 0) {
                             // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
                             let extraData = myJson.c
                             extraData = extraData.slice(-dateOffset)
-                            console.log("Line Data")
-                            console.log(extraData)
+                            // console.log("Line Data")
+                            // console.log(extraData)
                             lineData.map(function (num, idx) {
                                 return num + myJson.c[idx];
                             });
@@ -447,41 +415,41 @@ function Home() {
                 let res = "D"
                 const userAction = async () => {
                     let lineData = [];
-                    console.log("Resolution");
-                    console.log(res);
+                    // console.log("Resolution");
+                    // console.log(res);
                     from.setDate(to.getDate() - dateOffset);
                     to.setHours(23, 59, 59, 0);
                     from.setHours(0, 0, 0, 0)
                     to = new Date(to).getTime();
                     from = new Date(from).getTime();
-                    console.log("To");
-                    console.log(to);
-                    console.log(new Date(to))
-                    console.log("From");
-                    console.log(from);
-                    console.log(new Date(from))
+                    // console.log("To");
+                    // console.log(to);
+                    // console.log(new Date(to))
+                    // console.log("From");
+                    // console.log(from);
+                    // console.log(new Date(from))
                     for (let key in owned.owned) {
-                        console.log(key)
+                        // console.log(key)
                         const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
-                        console.log("URL");
-                        console.log(url)
+                        // console.log("URL");
+                        // console.log(url)
                         const response = await fetch(url);
                         const myJson = await response.json(); //extract JSON from the http response
-                        console.log("Historical Response");
-                        console.log(myJson)
-                        console.log(myJson.c)
+                        // console.log("Historical Response");
+                        // console.log(myJson)
+                        // console.log(myJson.c)
                         if (lineData.length === 0) {
                             lineData = myJson.c;
                             lineData = lineData.slice(-dateOffset)
-                            console.log("Data")
-                            console.log(lineData)
+                            // console.log("Data")
+                            // console.log(lineData)
                         }
                         if (lineData.length !== 0) {
                             // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
                             let extraData = myJson.c
                             extraData = extraData.slice(-dateOffset)
-                            console.log("Line Data")
-                            console.log(extraData)
+                            // console.log("Line Data")
+                            // console.log(extraData)
                             lineData.map(function (num, idx) {
                                 return num + myJson.c[idx];
                             });
@@ -500,41 +468,41 @@ function Home() {
                 let res = "D"
                 const userAction = async () => {
                     let lineData = [];
-                    console.log("Resolution");
-                    console.log(res);
+                    // console.log("Resolution");
+                    // console.log(res);
                     from.setDate(to.getDate() - dateOffset);
                     to.setHours(23, 59, 59, 0);
                     from.setHours(0, 0, 0, 0)
                     to = new Date(to).getTime();
                     from = new Date(from).getTime();
-                    console.log("To");
-                    console.log(to);
-                    console.log(new Date(to))
-                    console.log("From");
-                    console.log(from);
-                    console.log(new Date(from))
+                    // console.log("To");
+                    // console.log(to);
+                    // console.log(new Date(to))
+                    // console.log("From");
+                    // console.log(from);
+                    // console.log(new Date(from))
                     for (let key in owned.owned) {
-                        console.log(key)
+                        // console.log(key)
                         const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
-                        console.log("URL");
-                        console.log(url)
+                        // console.log("URL");
+                        // console.log(url)
                         const response = await fetch(url);
                         const myJson = await response.json(); //extract JSON from the http response
-                        console.log("Historical Response");
-                        console.log(myJson)
-                        console.log(myJson.c)
+                        // console.log("Historical Response");
+                        // console.log(myJson)
+                        // console.log(myJson.c)
                         if (lineData.length === 0) {
                             lineData = myJson.c;
                             lineData = lineData.slice(-dateOffset)
-                            console.log("Data")
-                            console.log(lineData)
+                            // console.log("Data")
+                            // console.log(lineData)
                         }
                         if (lineData.length !== 0) {
                             // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
                             let extraData = myJson.c
                             extraData = extraData.slice(-dateOffset)
-                            console.log("Line Data")
-                            console.log(extraData)
+                            // console.log("Line Data")
+                            // console.log(extraData)
                             lineData.map(function (num, idx) {
                                 return num + myJson.c[idx];
                             });
@@ -553,42 +521,42 @@ function Home() {
                 let res = "D"
                 const userAction = async () => {
                     let lineData = [];
-                    console.log("Resolution");
-                    console.log(res);
+                    // console.log("Resolution");
+                    // console.log(res);
                     from.setDate(to.getDate() - dateOffset);
                     to.setHours(23, 59, 59, 0);
                     from.setHours(0, 0, 0, 0)
                     to = new Date(to).getTime();
                     from = new Date(from).getTime();
-                    console.log("To");
-                    console.log(to);
-                    console.log(new Date(to))
+                    // console.log("To");
+                    // console.log(to);
+                    // console.log(new Date(to))
 
-                    console.log("From");
-                    console.log(from);
-                    console.log(new Date(from))
+                    // console.log("From");
+                    // console.log(from);
+                    // console.log(new Date(from))
                     for (let key in owned.owned) {
-                        console.log(key)
+                        // console.log(key)
                         const url = `https://finnhub.io/api/v1/stock/candle?token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220&symbol=${key}&resolution=${res}&from=${from}&to=${to}`
-                        console.log("URL");
-                        console.log(url)
+                        // console.log("URL");
+                        // console.log(url)
                         const response = await fetch(url);
                         const myJson = await response.json(); //extract JSON from the http response
-                        console.log("Historical Response");
-                        console.log(myJson)
-                        console.log(myJson.c)
+                        // console.log("Historical Response");
+                        // console.log(myJson)
+                        // console.log(myJson.c)
                         if (lineData.length === 0) {
                             lineData = myJson.c;
                             lineData = lineData.slice(-dateOffset)
-                            console.log("Data")
-                            console.log(lineData)
+                            // console.log("Data")
+                            // console.log(lineData)
                         }
                         if (lineData.length !== 0) {
                             // https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
                             let extraData = myJson.c
                             extraData = extraData.slice(-dateOffset)
-                            console.log("Line Data")
-                            console.log(extraData)
+                            // console.log("Line Data")
+                            // console.log(extraData)
                             lineData.map(function (num, idx) {
                                 return num + myJson.c[idx];
                             });

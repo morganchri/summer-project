@@ -70,6 +70,10 @@ td{
     word-wrap:break-word
 }
 
+.owned-list-formatting {
+    margin-top: 5px;
+}
+
 /*button:hover{*/
 /*    background: lightgray;*/
 /*}*/

@@ -9,12 +9,12 @@ const NavigationSidebar = () => {
 
     const { pathname } = useLocation();
     const [ignore ,active] = pathname.split("/");
-    const links = ["home","portfolio","notifications", "likes", "lists", "search"];
+    const links = ["home", "search"];
     const icons = [<i className="fa fa-home"></i>,
-                   <i className="fas fa-coins"></i>,
-                   <i className="fa fa-bell"></i>,
-                   <i className="far fa-heart"></i>,
-                   <i className="fa fa-list"></i>,
+                   // <i className="fas fa-coins"></i>,
+                   // <i className="fa fa-bell"></i>,
+                   // <i className="far fa-heart"></i>,
+                   // <i className="fa fa-list"></i>,
                    // <i className="fa fa-user"></i>,
                    // <i className="fas fa-circle"></i>,
                    <i className="fas fa-search"></i>]

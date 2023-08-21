@@ -1,26 +1,37 @@
 import React from ".";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {getAllLikes} from "../search/finnhubSearch";
 import {useEffect, useState} from "react";
 import LikedStocksList from "./liked-list";
+import {getLikesThunk} from "../services/likes-thunk";
 
 const LikedStocks = () => {
 
 	const { currentUser } = useSelector((state) => state.user);
 
-	const [likedArray, setLiked] = useState({});
+	const { allLikes } = useSelector((state) => state.allLikes);
 
-	const getLiked = async () => {
-		console.log("User ID");
-		console.log(currentUser._id)
-		const liked = await getAllLikes(currentUser._id);
-		console.log("Liked");
-		console.log(liked);
-		setLiked(liked);
-	}
+	console.log("ALL LIKES FROM THUNK");
+	console.log(allLikes);
+
+	const dispatch = useDispatch();
+
+	let likedArray = allLikes;
+
+	// const [likedArray, setLiked] = useState({});
+
+	// const getLiked = async () => {
+		// console.log("User ID");
+		// console.log(currentUser._id)
+		// const liked = await getAllLikes(currentUser._id);
+		// console.log("Liked");
+		// console.log(liked);
+		// setLiked(liked);
+	// }
 
 	useEffect(() => {
-		getLiked();
+		// getLiked();
+		dispatch(getLikesThunk(currentUser._id));
 	}, []);
 
 	console.log("liked stocks")

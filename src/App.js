@@ -7,10 +7,14 @@ import {Routes, Route} from "react-router";
 import {configureStore} from "@reduxjs/toolkit";
 import authReducer from "./main/reducers/auth-reducer";
 import {Provider} from "react-redux";
+import ownedReducer from "./main/services/owned-reducer";
+import ownersReducer from "./main/services/owners-reducer";
+import likesReducer from "./main/services/likes-reducer";
+import allLikesReducer from "./main/services/allLikes-reducer"
 const store = configureStore(
     {
         reducer: {
-            user:  authReducer}});
+            user:  authReducer, ownedStocks: ownedReducer, stockOwners: ownersReducer, likes: likesReducer, allLikes: allLikesReducer}});
 
 function App() {
 

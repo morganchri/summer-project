@@ -42,30 +42,40 @@ function ProfileScreen() {
 	const [ownedArray, setOwned] = useState([]);
 
 	const getFollowers = async () => {
-		const followers = await followersCalls.getFollowers(currentUser._id);
-		setFollowers(followers);
+		if (profile) {
+			const followers = await followersCalls.getFollowers(profile._id);
+			setFollowers(followers);
+		}
 	}
 
 	const getFollowing = async () => {
-		const following = await followersCalls.getFollowing(currentUser._id);
-		setFollowing(following);
+		if (profile) {
+			const following = await followersCalls.getFollowing(profile._id);
+			setFollowing(following);
+		}
 	}
 
 	const getAllUsers = async () => {
-		const users = await userCalls.getAllUsers();
-		console.log("Filtering out the current user")
-		console.log(users.filter(user =>  user.username !== currentUser.username))
-		setUsers(users.filter(user =>  user.username !== currentUser.username));
+		if (profile) {
+			const users = await userCalls.getAllUsers();
+			// console.log("Filtering out the current user")
+			// console.log(users.filter(user =>  user.username !== profile.username))
+			setUsers(users.filter(user =>  user.username !== profile.username));
+		}
 	}
 
 	const getLiked = async () => {
-		const liked = await apiCalls.getAllLikes(currentUser._id);
-		setLikes(liked);
+		if (profile) {
+			const liked = await apiCalls.getAllLikes(profile._id);
+			setLikes(liked);
+		}
 	}
 
 	const getOwned = async () => {
-		const owned = await apiCalls.getOwnedStocks(currentUser._id);
-		setOwned(owned)
+		if (profile) {
+			const owned = await apiCalls.getOwnedStocks(profile._id);
+			setOwned(owned)
+		}
 	}
 
 	useEffect(() => {
@@ -73,7 +83,7 @@ function ProfileScreen() {
 		getLiked();
 		getOwned();
 
-	}, []);
+	}, [profile]);
 
 	console.log("All Users");
 	console.log(users)
@@ -81,26 +91,28 @@ function ProfileScreen() {
 	useEffect(() => {
 		getFollowers();
 		getFollowing();
+
+		// https://stackoverflow.com/questions/34338411/how-to-import-jquery-using-es6-syntax
+		jQuery(document).ready(function(){
+			let radio1 = document.getElementById("contactChoice1");
+			let radio2 = document.getElementById("contactChoice2");
+			let radio3 = document.getElementById("contactChoice3");
+
+			if (profile && profile.role){
+				if (profile.role === "casual") {
+					radio1.checked = true;
+				}
+				if (profile.role === "professional") {
+					radio2.checked = true;
+				}
+				if (profile.role === "researcher") {
+					radio3.checked = true;
+				}
+			}
+		});
 	}, [profile]);
 
-	// https://stackoverflow.com/questions/34338411/how-to-import-jquery-using-es6-syntax
-	jQuery(document).ready(function(){
-		let radio1 = document.getElementById("contactChoice1");
-		let radio2 = document.getElementById("contactChoice2");
-		let radio3 = document.getElementById("contactChoice3");
 
-		if (profile && profile.role){
-			if (profile.role === "casual") {
-				radio1.checked = true;
-			}
-			if (profile.role === "professional") {
-				radio2.checked = true;
-			}
-			if (profile.role === "researcher") {
-				radio3.checked = true;
-			}
-		}
-	});
 
 	let owned = [];
 

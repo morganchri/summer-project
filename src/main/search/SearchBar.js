@@ -1,16 +1,13 @@
 import React, {useEffect, useState} from "react";
 import { AiOutlineSearch } from "react-icons/ai";
-// import { GoGear } from "react-icons/go";
 import "./index.css";
-import {useNavigate, useParams} from "react-router";
+import {useParams} from "react-router";
 import * as finnhubSearch from "../search/finnhubSearch"
 import {Link} from "react-router-dom";
 
 const SearchBar = () => {
 
 	const { searchTerm } = useParams();
-
-	// const navigate = useNavigate();
 
 	const [query, setQuery] = useState("aapl");
 	const [results, setResults] = useState([]);
@@ -20,6 +17,7 @@ const SearchBar = () => {
 		const response = await finnhubSearch.fullSearch(searchString);
 		const results = response.result;
 		setResults(results);
+		console.log(results[0]);
 	};
 
 	useEffect(() => {
@@ -29,6 +27,7 @@ const SearchBar = () => {
 		} else {
 			search(query);
 		}
+
 	}, [searchTerm]);
 
 	return (
@@ -54,7 +53,7 @@ const SearchBar = () => {
 					</button>
 				</div>
 			</div>
-			<h3>Stocks</h3>
+			<h3 className={"owned-list-formatting"}>Stocks</h3>
 			<div className="table-responsive">
 				<table className="table">
 					<tbody>

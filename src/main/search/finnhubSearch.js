@@ -32,18 +32,20 @@ export const getHistorical = async (ticker, from, to) => {
 	return response.data
 }
 
-export const userLikesStock = async (userid, stockTicker) => {
-	const response = await request.post(`${SERVER_URL}/likes/${stockTicker}/like`, {userid, stockTicker});
+export const userLikesStock = async (stockTicker) => {
+	console.log("STOCK TICKER FROM LIKE STOCK CLICK")
+	console.log(stockTicker);
+	const response = await request.post(`${SERVER_URL}/likes/like/${stockTicker}`, {stockTicker});
 	return response.data;
 };
 
-export const userBuysStock = async (userID, stockTicker) => {
-	const response  = await request.post(`${SERVER_URL}/owned/${stockTicker}/buy`, {userID, stockTicker});
+export const userBuysStock = async (stockTicker) => {
+	const response  = await request.post(`${SERVER_URL}/owned/buy/${stockTicker}`, {stockTicker});
 	return response.data;
 }
 
-export const userSellsStock = async (userID, stockTicker) => {
-	const response  = await request.post(`${SERVER_URL}/owned/${stockTicker}/sell`, {userID, stockTicker});
+export const userSellsStock = async (stockTicker) => {
+	const response  = await request.post(`${SERVER_URL}/owned/sell/${stockTicker}`, {stockTicker});
 	return response.data;
 }
 
@@ -70,5 +72,10 @@ export const getCompanyNews = async (ticker) => {
 
 export const getPeers = async (ticker) => {
 	const response = await axios.get(`${FINNHUB_API_BASE}/stock/peers?${TOKEN}&symbol=${ticker}`)
+	return response.data;
+}
+
+export const getOwners = async (ticker) => {
+	const response = await axios.get(`${SERVER_URL}/owned/get/${ticker}`);
 	return response.data;
 }

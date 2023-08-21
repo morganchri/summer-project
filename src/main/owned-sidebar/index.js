@@ -1,60 +1,34 @@
 import React from ".";
 import OwnedStocksList from "./owned-list";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {getOwnedStocks} from "../search/finnhubSearch";
 import {useEffect, useState} from "react";
-import companyProfile from "../API/CompanyProfile";
+import {getOwnedStocksThunk} from "../services/owned-thunk";
 
 const OwnedStocks = () => {
 
 	const { currentUser } = useSelector((state) => state.user);
+	const { ownedStocks } = useSelector((state) => state.ownedStocks);
 
-	let [ownedArray, setOwned] = useState({});
+	const dispatch = useDispatch();
 
-	const getOwned = async () => {
-		const owned = await getOwnedStocks(currentUser._id);
-		setOwned(owned);
-	}
+	const ownedArray = ownedStocks;
+
+	console.log("OWNED STOCKS FROM THUNK")
+	console.log(ownedStocks);
+	console.log(ownedArray);
+
+	console.log("CURRENT USER")
+	console.log(currentUser);
 
 	useEffect(() => {
-		getOwned();
+		dispatch(getOwnedStocksThunk(currentUser._id))
 	}, []);
 
 	let owned = [];
 
 	console.log("OwnedArray")
 	console.log(ownedArray);
-
-	// for(let i in ownedArray.owned) {
-	// 	if (ownedArray.owned[i] !== 0) {
-	// 		console.log("NOT ZERO");
-	// 		console.log(i)
-	// 	} else {
-	// 		console.log("ZERO");
-	// 		console.log(i)
-	// 	}
-	// }
-
-	// for (let key in ownedArray.owned) {
-	// 	let pair = {}
-	// 	pair[key] = ownedArray.owned[key]
-	// 	console.log(pair)
-	// 	owned.push(pair)
-	// }
-	//
-	// for (let i=0; i < owned.length; i++) {
-	// 	console.log("Owned list by index")
-	// 	console.log(owned)
-	// 	for (let key in owned[i]) {
-	// 		// console.log(key)
-	// 		// console.log(owned)
-	// 		if (owned[i][key] === 0) {
-	// 			owned.splice(i, 1);
-	// 			// console.log("SHOULD BE EMPTY")
-	// 			// console.log(owned);
-	// 		}
-	// 	}
-	// }
 
 	if ((ownedArray !== null)) {
 		for (let key in ownedArray.owned) {

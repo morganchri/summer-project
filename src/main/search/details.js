@@ -4,15 +4,38 @@ import * as finnhubSearch from "./finnhubSearch";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LineChart from "../home-page/line-chart";
 import Chart from "chart.js/auto";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import "./index.css"
 import jQuery from "jquery";
+import FollowerList from "../user/follower-list";
+import {getOwners, userSellsStock} from "./finnhubSearch";
+import OwnersList from "./owners-list";
+import {buyThunk, getOwnedStocksThunk, getOwnersThunk, sellThunk} from "../services/owned-thunk";
+import {getLikesThunk, likeThunk} from "../services/likes-thunk";
 
 function Details () {
 
 	const { currentUser } = useSelector((state) => state.user);
+	const { ownedStocks } = useSelector((state) => state.ownedStocks);
+	const { stockOwners } = useSelector((state) => state.stockOwners);
+	const { allLikes } = useSelector((state) => state.allLikes);
+	const { userlikes }  = useSelector((state) => state.likes);
+
+	const dispatch = useDispatch();
+
+	const userID = currentUser._id;
 
 	const { id } = useParams();
+
+	let owners = [...new Set(stockOwners)];
+	owners = owners.filter(e => e !== undefined);
+
+	useEffect(() => {
+		dispatch(getOwnersThunk(id));
+	}, []);
+
+	console.log("STOCK OWNERS FROM THUNK CALL")
+	console.log(stockOwners);
 
 	const [quote, setQuote] = useState({});
 	const [info, setInfo] = useState({});
@@ -23,6 +46,7 @@ function Details () {
 	const [peers, setPeers] = useState([]);
 	const [owned, setOwned] = useState(null);
 	const [likes, setLikes] = useState([]);
+	// const [owners, setOwners] = useState({});
 
 	const fetchQuote = async () => {
 		const quote = await finnhubSearch.getQuote(id);
@@ -67,14 +91,24 @@ function Details () {
 		setLikes(likes);
 	}
 
+	// const fetchOwners = async () => {
+	// 	const owners = await finnhubSearch.getOwners(id);
+	// 	console.log("ALL OWNERS");
+	// 	console.log(owners);
+	// 	setOwners(owners);
+	// }
+
 	useEffect(() => {
 		fetchQuote();
 		fetchInfo();
 		fetchVolume();
 		fetchNews();
 		fetchPeers();
-		fetchOwned();
-		fetchLikes();
+		if (currentUser) {
+			fetchOwned();
+			fetchLikes();
+		}
+		// fetchOwners();
 		setChart(<LineChart/>);
 	}, [id]);
 
@@ -93,26 +127,28 @@ function Details () {
 	}, [chart]);
 
 	const userAction = async (id, from, to, dateOffset) => {
-		const ctx = Chart.getChart("myChart")
-		let lineData = [];
-		const hist = await finnhubSearch.getHistorical(id, from, to)
-		if (lineData.length === 0) {
-			lineData = hist.c;
-			console.log("Data")
-			console.log(lineData)
-			lineData = lineData.slice(-dateOffset)
+		if (chart) {
+			const ctx = Chart.getChart("myChart")
+			let lineData = [];
+			const hist = await finnhubSearch.getHistorical(id, from, to)
+			if (lineData.length === 0) {
+				lineData = hist.c;
+				// console.log("Data")
+				// console.log(lineData)
+				lineData = lineData.slice(-dateOffset)
+			}
+			if (lineData.length !== 0) {
+				// https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
+				let extraData = hist.c;
+				extraData = extraData.slice(-dateOffset);
+				lineData.map(function (num, idx) {
+					return num + extraData[idx];
+				});
+			}
+			ctx.data.labels = Array(lineData.length).fill(null).map((_, i) => i);
+			ctx.data.datasets[0].data = lineData;
+			ctx.update();
 		}
-		if (lineData.length !== 0) {
-			// https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
-			let extraData = hist.c;
-			extraData = extraData.slice(-dateOffset);
-			lineData.map(function (num, idx) {
-				return num + extraData[idx];
-			});
-		}
-		ctx.data.labels = Array(lineData.length).fill(null).map((_, i) => i);
-		ctx.data.datasets[0].data = lineData;
-		ctx.update();
 	}
 
 	const ctx = Chart.getChart("myChart")
@@ -232,17 +268,17 @@ function Details () {
 	}
 
 	const checkDisabled = () => {
-		console.log("Likes");
-		console.log(likes);
-		console.log("Owned");
-		console.log(owned);
+		// console.log("Likes");
+		// console.log(likes);
+		// console.log("Owned");
+		// console.log(owned);
 		const userLikes = likes.filter(like => like.user === currentUser._id)
-		console.log("User Likes");
-		console.log(userLikes);
+		// console.log("User Likes");
+		// console.log(userLikes);
 		if (owned) {
 			const userOwned = owned.owned[id];
-			console.log("User Owned");
-			console.log(userOwned);
+			// console.log("User Owned");
+			// console.log(userOwned);
 			if (userOwned === 0) {
 				document.getElementById("sellButton").disabled = true;
 			}
@@ -250,7 +286,7 @@ function Details () {
 				document.getElementById("sellButton").disabled = false;
 			}
 		}
-		if (userLikes) {
+		if (userLikes[id]) {
 			document.getElementById("likeButton").disabled = true;
 		} else {
 			document.getElementById("likeButton").disabled = false;
@@ -258,16 +294,18 @@ function Details () {
 	}
 
 	useEffect(() => {
-		checkDisabled();
-		}, [owned, likes]);
+		if(currentUser) {
+			checkDisabled();
+		}
+		dispatch(getLikesThunk(currentUser._id));
+		}, [owned, likes, ownedStocks, userlikes]);
 
 	return (
 		<div>
 			<div className="details-formatting">
 				<h2 className={(change >= 0) ? "positive" : "negative"}>
-					<img src={info.logo} alt={info.name} className="rounded" /> {info.name} &nbsp;
+					<img src={info.logo} alt={info.name} className="rounded" /> {info.name} &nbsp; {id} &nbsp;
 					${quote.c} (${quote.d}) {quote.dp}%
-
 				</h2>
 				<canvas id="myChart"></canvas>
 				{chart}
@@ -349,45 +387,72 @@ function Details () {
 			<div>
 				{currentUser && <button id={"likeButton"}
 					onClick={() => {
-						jQuery.ajax({
-										url:finnhubSearch.userLikesStock(currentUser._id, id),
-										success:function(){
-											// fetchOwned();
-											checkDisabled();
-										}
-									})
+						// jQuery.ajax({
+						// 				url:finnhubSearch.userLikesStock(currentUser._id, id),
+						// 				success:function(){
+						// 					// fetchOwned();
+						// 					checkDisabled();
+						// 				}
+						// 			})
+						dispatch(likeThunk(id));
+						checkDisabled();
+						dispatch(getLikesThunk(currentUser._id));
 					}}
 					className="btn btn-success float-end button-hover-format">
 					Like
 				</button>}
 				{(currentUser && (currentUser.role !== "researcher")) && <button id={"buyButton"}
 					onClick = {async () => {
-						jQuery.ajax({
-								   url:await finnhubSearch.userBuysStock(currentUser._id, id),
-								   success:function(){
-									   // fetchOwned();
-									   checkDisabled();
-								   }
-							   })
+						// jQuery.ajax({
+						// 		   url:await finnhubSearch.userBuysStock(currentUser._id, id),
+						// 		   success:function(){
+						// 			   // fetchOwned();
+						// 			   checkDisabled();
+						// 		   }
+						// 	   })
 						// finnhubSearch.userBuysStock(currentUser._id, id);
 						// fetchOwned();
+						dispatch(buyThunk(id));
+						checkDisabled();
+						dispatch(getOwnedStocksThunk(currentUser._id));
+						dispatch(getOwnersThunk(id));
+
 					}}
 					className="btn buy-button-format btn-success button-hover-format">
 					Buy
 				</button>}
 				{(currentUser && (currentUser.role !== "researcher")) && <button id={"sellButton"}
 					onClick = {async () => {
-						jQuery.ajax({
-										url:await finnhubSearch.userSellsStock(currentUser._id, id),
-										success:function(){
-											// fetchOwned();
-											checkDisabled();
-										}
-									})
+					// 	jQuery.ajax({
+					// 					url:await finnhubSearch.userSellsStock(currentUser._id, id),
+					// 					success:function(){
+					// 						// fetchOwned();
+					// 						checkDisabled();
+					// 					}
+					// 				})
+						dispatch(sellThunk(id));
+						checkDisabled();
+						dispatch(getOwnedStocksThunk(currentUser._id))
+						dispatch(getOwnersThunk(id));
 					}}
 					className="btn sell-button-format btn-success button-hover-format">
 					Sell
 				</button>}
+			</div>
+			<div className={"owned-list-formatting"}>
+				<ul className="list-group">
+					<li className="list-group-item">
+						<h3>
+							Who Owns This Stock:
+						</h3>
+					</li>
+					{(owners.length > 0) && owners.map(owner =>
+																 <OwnersList
+																	 // key={owner.key}
+																	 owner={owner}/>
+					)}
+					{(owners.length === 0) && <h5 className={"text-center"}>No Owners Yet</h5>}
+				</ul>
 			</div>
 		</div>
 	)

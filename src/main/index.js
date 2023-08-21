@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import NavigationSidebar from "./navigation-sidebar";
 import {Routes, Route, Link} from "react-router-dom";
 import Home from "./home-page";
@@ -10,7 +10,6 @@ import Profile from "./user/profile";
 import SearchBar from "./search/SearchBar";
 import Details from "./search/details"
 import LikedStocks from "./liked-sidebar";
-import LikedHomePage from "./home-page/research-home-page";
 import LikeHomePage from "./home-page/likeHomePage";
 import PublicProfile from "./user/public-profile";
 
@@ -29,10 +28,10 @@ function Main() {
                             {!currentUser && <Route path="/home" element={<h1>Please log in or register</h1>}/>}
                             {(currentUser && ((currentUser.role === "casual") || (currentUser.role === "professional"))) && <Route path="/home" element={<Home/>}/>}
                             {currentUser && currentUser.role === "researcher" && <Route path="/home" element={<LikeHomePage/>}/>}
-                            <Route path="/portfolio" element={<h1>Portfolio</h1>} />
-                            <Route path="/notifications" element={<h1>Notifications</h1>}/>
-                            <Route path="/likes" element={<h1>Likes</h1>}/>
-                            <Route path="/lists" element={<h1>Lists</h1>}/>
+                            {/*<Route path="/portfolio" element={<h1>Portfolio</h1>} />*/}
+                            {/*<Route path="/notifications" element={<h1>Notifications</h1>}/>*/}
+                            {/*<Route path="/likes" element={<h1>Likes</h1>}/>*/}
+                            {/*<Route path="/lists" element={<h1>Lists</h1>}/>*/}
                             <Route path="/profile" element={<Profile/>}/>
                             <Route path="/profile/:uid" element={<PublicProfile/>}/>
                             <Route path="/search" element={<SearchBar/>}/>
