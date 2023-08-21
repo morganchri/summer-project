@@ -117,6 +117,7 @@ function Details () {
 	}, [id]);
 
 	useEffect(() => {
+		// https://stackoverflow.com/questions/34338411/how-to-import-jquery-using-es6-syntax
 		jQuery(document).ready(function(){
 			let to = (new Date());
 			let from = (new Date());

@@ -31,9 +31,9 @@ function ProfileScreen() {
 		loadProfile()
 	}, []);
 
-	console.log("Current User ID")
-	console.log(profile);
-	console.log(currentUser);
+	// console.log("Current User ID")
+	// console.log(profile);
+	// console.log(currentUser);
 
 	const [followers, setFollowers] = useState([]);
 	const [following, setFollowing] = useState([]);
@@ -85,8 +85,8 @@ function ProfileScreen() {
 
 	}, [profile]);
 
-	console.log("All Users");
-	console.log(users)
+	// console.log("All Users");
+	// console.log(users)
 
 	useEffect(() => {
 		getFollowers();

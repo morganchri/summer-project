@@ -7,8 +7,8 @@ import {Link} from "react-router-dom";
 
 const OwnersList = (owner) => {
 
-	console.log("PARAMETER FOR OWNERS LIST");
-	console.log(owner.owner);
+	// console.log("PARAMETER FOR OWNERS LIST");
+	// console.log(owner.owner);
 
 	const [user, setUser] = useState({});
 
@@ -21,8 +21,8 @@ const OwnersList = (owner) => {
 		fetchUser();
 	}, [owner]);
 
-	console.log("USER FOR OWNERS LIST");
-	console.log(user);
+	// console.log("USER FOR OWNERS LIST");
+	// console.log(user);
 
 	if (user) {
 		return(

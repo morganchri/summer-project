@@ -24,8 +24,8 @@ const WhoToFollowList = (user) => {
 
 	// disabled={follow.length > 0}
 	const checkDisabled = () => {
-		console.log("Follow");
-		console.log(follow);
+		// console.log("Follow");
+		// console.log(follow);
 		if(follow.length > 0) {
 			document.getElementById("followbutton").disabled = true;
 		}

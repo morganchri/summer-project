@@ -9,11 +9,11 @@ const FollowerList = (follower) => {
 
 	const [user, setUser] = useState({});
 
-	console.log("Follower to find user")
-	console.log(follower);
-	console.log(follower.follower);
-	console.log(follower.follower.followed);
-	console.log(follower.follower.follower);
+	// console.log("Follower to find user")
+	// console.log(follower);
+	// console.log(follower.follower);
+	// console.log(follower.follower.followed);
+	// console.log(follower.follower.follower);
 
 	const getUser = async () => {
 		const user = await userCalls.getUser(follower.follower.follower);
@@ -26,9 +26,9 @@ const FollowerList = (follower) => {
 		getUser();
 	}, [follower]);
 
-	console.log("User For List");
-	console.log(user);
-	console.log(user);
+	// console.log("User For List");
+	// console.log(user);
+	// console.log(user);
 
 	return(
 		<li className="list-group-item">
