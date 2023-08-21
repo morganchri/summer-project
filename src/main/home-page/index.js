@@ -4,12 +4,19 @@ import "./index.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Chart from "chart.js/auto";
 import {useSelector} from "react-redux";
-import {getOwnedStocks, getQuote} from "../search/finnhubSearch";
+import {getAllLikes, getOwnedStocks, getQuote} from "../search/finnhubSearch";
 import jQuery from "jquery";
+import TopOwnedList from "./top-owned-list";
+import TopLikedList from "./top-liked-list";
+import * as finnhubSearch from "../search/finnhubSearch";
 
 function Home() {
 
     const { currentUser } = useSelector((state) => state.user);
+    const { allLikes } = useSelector((state) => state.allLikes);
+
+    console.log("ALL LIKES FROM THUNK IN HOME")
+    console.log(allLikes)
 
     const [active, setActive] = useState("1d");
     const [chart, setChart] = useState();
@@ -17,6 +24,8 @@ function Home() {
     const [total, setTotal] = useState(0);
     const [change, setChange] = useState(0);
     const [pct, setPct] = useState(0);
+    const [likes, setLikes] = useState([]);
+    const [allOwned, setOwn] = useState([]);
 
 
     const getOwned = async () => {
@@ -44,6 +53,21 @@ function Home() {
             }
         }
     }
+
+    const fetchLikes = async () => {
+        const likes = await finnhubSearch.getLikes();
+        setLikes(likes);
+    }
+
+    const fetchAllOwned = async () => {
+        const owned = await finnhubSearch.getAllOwned();
+        setOwn(owned);
+    }
+
+    useEffect(() => {
+        fetchLikes();
+        fetchAllOwned();
+    }, []);
 
     useEffect(() => {
         getOwned();
@@ -573,40 +597,133 @@ function Home() {
         }
     }
 
-    return (
-        <div className={"header-formatting"}>
-            <h1 className={(change >= 0) ? "header-positive" : "header-negative"}>Hello, {currentUser.firstName}!</h1>
-            <h2 className={(change >= 0) ? "header-positive" : "header-negative"}>${total.toFixed(2)} ({change.toFixed(2)}) {pct.toFixed(2)}%</h2>
-            <canvas id="myChart"></canvas>
-            {chart}
-            <ul className={(change >= 0) ? "nav nav-pills nav-justified pill_nav_class_positive" : "nav nav-pills nav-justified pill_nav_class_negative"}>
-                <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
-                    <button id='1d' className={`nav-link ${active === "1d" ? "active" : ""}`} onClick={pillClickHandler}>1 Day</button>
-                </li>
-                <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
-                    <button id='5d' className={`nav-link ${active === "5d" ? "active" : ""}`} onClick={pillClickHandler}>5 Days</button>
-                </li>
-                <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
-                    <button id='7d' className={`nav-link ${active === "7d" ? "active" : ""}`} onClick={pillClickHandler}>7 Days</button>
-                </li>
-                <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
-                    <button id='2w' className={`nav-link ${active === "2w" ? "active" : ""}`} onClick={pillClickHandler}>2 Weeks</button>
-                </li>
-                <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
-                    <button id='1m' className={`nav-link ${active === "1m" ? "active" : ""}`} onClick={pillClickHandler}>1 Month</button>
-                </li>
-                <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
-                    <button id='3m' className={`nav-link ${active === "3m" ? "active" : ""}`} onClick={pillClickHandler}>3 Months</button>
-                </li>
-                <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
-                    <button id='6m' className={`nav-link ${active === "6m" ? "active" : ""}`} onClick={pillClickHandler}>6 Months</button>
-                </li>
-                <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
-                    <button id='1y' className={`nav-link ${active === "1y" ? "active" : ""}`} onClick={pillClickHandler}>1 Year</button>
-                </li>
-            </ul>
-        </div>
+    let likesCounts = {};
 
+    for (let i = 0; i < likes.length; i++) {
+        if (likesCounts[likes[i]["stockTicker"]]) {
+            likesCounts[likes[i]["stockTicker"]] += 1;
+        }
+        if (!likesCounts[likes[i]["stockTicker"]]) {
+            likesCounts = {...likesCounts, [likes[i]["stockTicker"]]: 1}
+        }
+    }
+
+    let vals = Object.values(likesCounts)
+    const max = Math.max(...vals);
+    for (let key in likesCounts) {
+        if (likesCounts[key] !== max) {
+            delete likesCounts[key]
+        }
+    }
+
+    let likesToDisplay = []
+    for (let key in likesCounts) {
+        likesToDisplay.push(key);
+    }
+
+    console.log("ALL OWNED ANON")
+    console.log(allOwned);
+
+    let own = {}
+
+    for (let i=0; i<allOwned.length; i++) {
+        console.log("ALL OWNED ITERATION");
+        console.log(allOwned[i].owned);
+        for (let key in allOwned[i].owned) {
+            if (own[key]) {
+                own[key] += allOwned[i].owned[key];
+            }
+            if (!own[key]) {
+                own[key] = allOwned[i].owned[key];
+            }
+        }
+    }
+
+    console.log("OWN LIST FOR HOME PAGE");
+    console.log(own);
+
+    let ownVals = Object.values(own)
+    const maxOwn = Math.max(...ownVals);
+    for (let key in own) {
+        if (own[key] !== maxOwn) {
+            delete own[key]
+        }
+    }
+
+    let ownToDisplay = []
+    for (let key in own) {
+        ownToDisplay.push(key);
+    }
+
+    return (
+        <div>
+            <div className={"header-formatting"}>
+                <h1 className={(change >= 0) ? "header-positive" : "header-negative"}>Hello, {currentUser.firstName}!</h1>
+                <h2 className={(change >= 0) ? "header-positive" : "header-negative"}>${total.toFixed(2)} ({change.toFixed(2)}) {pct.toFixed(2)}%</h2>
+                <canvas id="myChart"></canvas>
+                {chart}
+                <ul className={(change >= 0) ? "nav nav-pills nav-justified pill_nav_class_positive" : "nav nav-pills nav-justified pill_nav_class_negative"}>
+                    <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
+                        <button id='1d' className={`nav-link ${active === "1d" ? "active" : ""}`} onClick={pillClickHandler}>1 Day</button>
+                    </li>
+                    <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
+                        <button id='5d' className={`nav-link ${active === "5d" ? "active" : ""}`} onClick={pillClickHandler}>5 Days</button>
+                    </li>
+                    <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
+                        <button id='7d' className={`nav-link ${active === "7d" ? "active" : ""}`} onClick={pillClickHandler}>7 Days</button>
+                    </li>
+                    <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
+                        <button id='2w' className={`nav-link ${active === "2w" ? "active" : ""}`} onClick={pillClickHandler}>2 Weeks</button>
+                    </li>
+                    <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
+                        <button id='1m' className={`nav-link ${active === "1m" ? "active" : ""}`} onClick={pillClickHandler}>1 Month</button>
+                    </li>
+                    <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
+                        <button id='3m' className={`nav-link ${active === "3m" ? "active" : ""}`} onClick={pillClickHandler}>3 Months</button>
+                    </li>
+                    <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
+                        <button id='6m' className={`nav-link ${active === "6m" ? "active" : ""}`} onClick={pillClickHandler}>6 Months</button>
+                    </li>
+                    <li className={(change >= 0) ? "positive nav-item pos-color" : "negative nav-item neg-color"}>
+                        <button id='1y' className={`nav-link ${active === "1y" ? "active" : ""}`} onClick={pillClickHandler}>1 Year</button>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <div className={"most-liked-or-owned-formatting"}>
+                    <div className={"row"}>
+                        <div className={"col-6"}>
+                            <ul className="list-group">
+                                <li className="list-group-item">
+                                    <h3>Most Owned Stocks</h3>
+                                </li>
+                                {
+                                    ownToDisplay.map(ticker =>
+                                                         <TopOwnedList
+                                                             // key={ticker.key}
+                                                             owned={ticker}/>
+                                    )
+                                }
+                            </ul>
+                        </div>
+                        <div className={"col-6"}>
+                            <ul className="list-group">
+                                <li className="list-group-item">
+                                    <h3>Most Liked Stocks</h3>
+                                </li>
+                                {
+                                    likesToDisplay.map(ticker =>
+                                                           <TopLikedList
+                                                               // key={ticker.key}
+                                                               liked={ticker}/>
+                                    )
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
     );

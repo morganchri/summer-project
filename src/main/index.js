@@ -12,6 +12,7 @@ import Details from "./search/details"
 import LikedStocks from "./liked-sidebar";
 import LikeHomePage from "./home-page/likeHomePage";
 import PublicProfile from "./user/public-profile";
+import AnonHomePage from "./home-page/anon-home-page";
 
 function Main() {
 
@@ -25,7 +26,7 @@ function Main() {
                     </div>
                     <div className={"col-8"}>
                         <Routes>
-                            {!currentUser && <Route path="/home" element={<h1>Please log in or register</h1>}/>}
+                            {!currentUser && <Route path="/home" element={<AnonHomePage/>}/>}
                             {(currentUser && ((currentUser.role === "casual") || (currentUser.role === "professional"))) && <Route path="/home" element={<Home/>}/>}
                             {currentUser && currentUser.role === "researcher" && <Route path="/home" element={<LikeHomePage/>}/>}
                             {/*<Route path="/portfolio" element={<h1>Portfolio</h1>} />*/}
@@ -45,6 +46,7 @@ function Main() {
                         {!currentUser && <Link className="text-capitalize login-button-format" to="/register">Register</Link>}
                         {currentUser && (currentUser.role !== "researcher") && <OwnedStocks/>}
                         {currentUser && (currentUser.role === "researcher") && <LikedStocks/>}
+                        {currentUser && (currentUser.role === "professional") && <LikedStocks/>}
                     </div>
                 </div>
             </div>

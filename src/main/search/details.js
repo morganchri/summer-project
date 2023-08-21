@@ -23,7 +23,7 @@ function Details () {
 
 	const dispatch = useDispatch();
 
-	const userID = currentUser._id;
+	// const userID = currentUser._id;
 
 	const { id } = useParams();
 
@@ -82,13 +82,17 @@ function Details () {
 	}
 
 	const fetchOwned = async () => {
-		const owned = await finnhubSearch.getOwnedStocks(currentUser._id);
-		setOwned(owned);
+		if (currentUser._id) {
+			const owned = await finnhubSearch.getOwnedStocks(currentUser);
+			setOwned(owned);
+		}
 	}
 
 	const fetchLikes = async () => {
-		const likes = await finnhubSearch.getAllLikes(currentUser._id);
-		setLikes(likes);
+		if (currentUser._id) {
+			const likes = await finnhubSearch.getAllLikes(currentUser);
+			setLikes(likes);
+		}
 	}
 
 	// const fetchOwners = async () => {
@@ -296,8 +300,8 @@ function Details () {
 	useEffect(() => {
 		if(currentUser) {
 			checkDisabled();
+			dispatch(getLikesThunk(currentUser._id));
 		}
-		dispatch(getLikesThunk(currentUser._id));
 		}, [owned, likes, ownedStocks, userlikes]);
 
 	return (
@@ -396,7 +400,9 @@ function Details () {
 						// 			})
 						dispatch(likeThunk(id));
 						checkDisabled();
-						dispatch(getLikesThunk(currentUser._id));
+						if (currentUser) {
+							dispatch(getLikesThunk(currentUser._id));
+						}
 					}}
 					className="btn btn-success float-end button-hover-format">
 					Like
@@ -414,7 +420,9 @@ function Details () {
 						// fetchOwned();
 						dispatch(buyThunk(id));
 						checkDisabled();
-						dispatch(getOwnedStocksThunk(currentUser._id));
+						if (currentUser) {
+							dispatch(getOwnedStocksThunk(currentUser._id));
+						}
 						dispatch(getOwnersThunk(id));
 
 					}}
@@ -432,7 +440,9 @@ function Details () {
 					// 				})
 						dispatch(sellThunk(id));
 						checkDisabled();
-						dispatch(getOwnedStocksThunk(currentUser._id))
+						if (currentUser) {
+							dispatch(getOwnedStocksThunk(currentUser._id));
+						}
 						dispatch(getOwnersThunk(id));
 					}}
 					className="btn sell-button-format btn-success button-hover-format">
