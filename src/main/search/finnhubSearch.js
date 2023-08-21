@@ -6,11 +6,13 @@ const request = axios.create({
 							 });
 
 const FINNHUB_API_BASE = `https://finnhub.io/api/v1`;
-const TOKEN = `token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220`
+// const TOKEN = `token=cj4io81r01qq6hgdl21gcj4io81r01qq6hgdl220`
+const TOKEN=process.env.REACT_APP_TOKEN;
 const FINNHUB_SEARCH = `search?${TOKEN}`;
-const FINNHUB_QUOTE = `quote?${TOKEN}`
-const FINNHUB_PROFILE = `profile2?${TOKEN}`
-const SERVER_URL = `http://localhost:4000/api`;
+const FINNHUB_QUOTE = `quote?${TOKEN}`;
+const FINNHUB_PROFILE = `profile2?${TOKEN}`;
+// const SERVER_URL = `http://localhost:4000/api`;
+const SERVER_URL = process.env.REACT_APP_SERVER_API_URL;
 
 export const fullSearch = async (query) => {
 	const response = await axios.get(`${FINNHUB_API_BASE}/${FINNHUB_SEARCH}&q=${query}`);
