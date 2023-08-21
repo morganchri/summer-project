@@ -4,7 +4,8 @@ const request = axios.create({
 								 withCredentials: true,
 							 });
 
-const SERVER_URL = `http://localhost:4000/api`;
+// const SERVER_URL = `http://localhost:4000/api`;
+const SERVER_URL = process.env.REACT_APP_SERVER_API_URL;
 
 export const getUser = async (userID) => {
 	console.log("USER FOR GET CALL")
