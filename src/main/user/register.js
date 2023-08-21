@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { registerUserThunk } from "../services/auth-thunks";
 import "./index.css";
 
+// Adapted from Homework Assignments
 function RegisterScreen() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");

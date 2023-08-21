@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { loginThunk } from "../services/auth-thunks";
 import "./index.css";
 
+// Adapted from Homework Assignments
 function LoginScreen() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");

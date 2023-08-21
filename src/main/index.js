@@ -14,6 +14,7 @@ import LikeHomePage from "./home-page/likeHomePage";
 import PublicProfile from "./user/public-profile";
 import AnonHomePage from "./home-page/anon-home-page";
 
+// Adapted from Homework Assignments
 function Main() {
 
     const { currentUser } = useSelector((state) => state.user);

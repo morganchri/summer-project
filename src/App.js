@@ -16,6 +16,7 @@ const store = configureStore(
         reducer: {
             user:  authReducer, ownedStocks: ownedReducer, stockOwners: ownersReducer, likes: likesReducer, allLikes: allLikesReducer}});
 
+// Adapted from Homework Assignments
 function App() {
 
   return (

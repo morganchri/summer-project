@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// From Homework Assignments, with some modifications, notably to the register user function
 const SERVER_API_URL = process.env.REACT_APP_SERVER_API_URL;
 const USERS_URL = `${SERVER_API_URL}/users`;
 

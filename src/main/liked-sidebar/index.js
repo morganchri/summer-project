@@ -5,6 +5,8 @@ import {useEffect, useState} from "react";
 import LikedStocksList from "./liked-list";
 import {getLikesThunk} from "../services/likes-thunk";
 
+
+// HTML Adapted from Homework Assignments
 const LikedStocks = () => {
 
 	const { currentUser } = useSelector((state) => state.user);
@@ -17,17 +19,6 @@ const LikedStocks = () => {
 	const dispatch = useDispatch();
 
 	let likedArray = allLikes;
-
-	// const [likedArray, setLiked] = useState({});
-
-	// const getLiked = async () => {
-		// console.log("User ID");
-		// console.log(currentUser._id)
-		// const liked = await getAllLikes(currentUser._id);
-		// console.log("Liked");
-		// console.log(liked);
-		// setLiked(liked);
-	// }
 
 	useEffect(() => {
 		// getLiked();

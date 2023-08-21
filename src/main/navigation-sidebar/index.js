@@ -4,6 +4,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
 import {useSelector} from "react-redux";
 
+// Adapted From Homework Assignments
 const NavigationSidebar = () => {
     const { currentUser } = useSelector((state) => state.user);
 

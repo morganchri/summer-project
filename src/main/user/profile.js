@@ -16,7 +16,7 @@ import OwnedStocksList from "../owned-sidebar/owned-list";
 import * as apiCalls from "../search/finnhubSearch";
 window.$ = window.jQuery = jQuery;
 
-
+// Adapted from Homework Assignments
 function ProfileScreen() {
 	const { currentUser } = useSelector((state) => state.user);
 	const [ profile, setProfile ] = useState(currentUser);
