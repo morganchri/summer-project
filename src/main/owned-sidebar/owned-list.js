@@ -1,18 +1,41 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../index.css"
 import "./index.css"
-import {GetQuote, CompanyProfile} from "../API/FinnhubData"
+// import {GetQuote, CompanyProfile} from "../API/FinnhubData"
 import {Link} from "react-router-dom";
+import {getCompanyInfo, getQuote} from "../search/finnhubSearch";
 
 
 const OwnedStocksList = (owned) => {
 
 	const ticker = Object.keys(owned['owned'])[0]
-	const companyName = CompanyProfile(ticker);
-	const stockName = companyName["name"];
 
-	const quote = GetQuote(ticker);
+	const [companyName, setCompany] = useState({});
+	const [quote, setQuote] = useState({});
+
+	const fetchCompany = async () => {
+		const company = await getCompanyInfo(ticker);
+		setCompany(company);
+	}
+
+	const fetchQuote = async () => {
+		const quote = await getQuote(ticker);
+		setQuote(quote);
+	}
+
+
+	useEffect(() => {
+		fetchCompany();
+		fetchQuote()
+	}, []);
+
+	// const companyName = CompanyProfile(ticker);
+
+
+	// const quote = GetQuote(ticker);
+
+	const stockName = companyName["name"];
 
 	let price = quote['c'];
 	price = Math.floor(price * 100)/100

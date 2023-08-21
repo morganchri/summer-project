@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../index.css"
 import "./index.css"
-import {GetQuote} from "../API/FinnhubData"
+// import {GetQuote} from "../API/FinnhubData"
 import {getCompanyInfo, getQuote} from "../search/finnhubSearch";
 import {Link} from "react-router-dom";
 
